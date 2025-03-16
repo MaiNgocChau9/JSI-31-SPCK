@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Game Mood - Khám Phá Thế Giới Game</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="./css/index.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body id="home">
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-gamepad brand-icon"></i>
+          Game Mood
+        </a>
+        <div class="theme-toggle-wrapper">
+          <button id="theme-toggle" class="btn btn-theme">
+            <i class="fas fa-sun theme-icon-light"></i>
+            <i class="fas fa-moon theme-icon-dark"></i>
+          </button>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav text-center">
+            <li class="nav-item">
+              <a class="nav-link" href="#home">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#about">Giới thiệu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#contact">Liên hệ</a>
+            </li>
+            <li class="nav-item admin-manage d-none">
+              <a class="nav-link" href="./html/admin.html">Quản lí</a>
+            </li>
+            <li class="nav-item d-flex m-auto login_register">
+              <a class="btn btn-login" href="./html/login.html">Đăng nhập</a>
+              <a class="btn btn-register" href="./html/register.html">Đăng ký</a>
+            </li>
+            <li class="nav-item d-flex m-auto">
+              <a class="btn userNameSection">Đăng xuất</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero">
+        <div class="container text-center">
+          <h1 data-aos="fade-up">Khám phá <span>Thế Giới Game</span></h1>
+          <p class="hero-text" data-aos="fade-up" data-aos-delay="100">
+            Từ những tựa game AAA đến game indie độc đáo, Game Mood là điểm đến lý tưởng để bạn
+            tìm kiếm và trải nghiệm những tựa game hấp dẫn nhất
+          </p>
+
+          <form class="search-form" data-aos="fade-up" data-aos-delay="200">
+            <div class="search-wrapper">
+              <input
+                type="text"
+                placeholder="Tìm kiếm game yêu thích..."
+                class="search-input"
+              />
+              <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="categories">
+        <div class="container">
+          <div class="row g-4">
+            <div class="col-12 col-md-6 col-lg-3">
+              <div class="category-card" data-aos="flip-left">
+                <div class="icon-wrapper">
+                  <i class="fas fa-gun"></i>
+                </div>
+                <h3>FPS Games</h3>
+                <p>
+                  Valorant, CS2, Call of Duty và nhiều tựa game bắn súng hấp dẫn khác
+                </p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <div
+                class="category-card"
+                data-aos="flip-left"
+                data-aos-delay="100"
+              >
+                <div class="icon-wrapper">
+                  <i class="fas fa-chess"></i>
+                </div>
+                <h3>MOBA Games</h3>
+                <p>
+                  League of Legends, Dota 2, Mobile Legends và các game đấu trường trực tuyến
+                </p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <div
+                class="category-card"
+                data-aos="flip-left"
+                data-aos-delay="200"
+              >
+                <div class="icon-wrapper">
+                  <i class="fas fa-person-running"></i>
+                </div>
+                <h3>Action RPG</h3>
+                <p>
+                  Elden Ring, Dark Souls, God of War và các game nhập vai hành động
+                </p>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-3">
+              <div
+                class="category-card"
+                data-aos="flip-left"
+                data-aos-delay="300"
+              >
+                <div class="icon-wrapper">
+                  <i class="fas fa-car"></i>
+                </div>
+                <h3>Racing & Sports</h3>
+                <p>Forza Horizon, FIFA 24, NBA 2K24 và các game thể thao đỉnh cao</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta">
+        <div class="container text-center">
+          <h2 data-aos="fade-up">Game mới ra mắt</h2>
+          <p data-aos="fade-up" data-aos-delay="100">
+            Khám phá những tựa game bom tấn vừa ra mắt và sắp phát hành
+          </p>
+          <a class="secondary-button explore-btn" data-aos="fade-up" data-aos-delay="200" href="#contact">
+            Xem thêm
+          </a>
+        </div>
+      </section>
+
+      <section class="about-section" id="about">
+        <div class="container">
+          <div class="row align-items-center">
+            <div class="col-md-6" data-aos="fade-right">
+              <div class="about-content">
+                <h2>Game Mood<br>Cộng đồng game thủ Việt Nam</h2>
+                <p>Game Mood là nền tảng chia sẻ và khám phá game dành cho cộng đồng game thủ Việt Nam. Chúng tôi cung cấp:</p>
+                <div class="features">
+                  <div class="feature-item">
+                    <i class="fas fa-newspaper"></i>
+                    <div class="feature-text">
+                      <h4>Tin tức game mới nhất</h4>
+                      <p>Cập nhật thông tin về các tựa game mới, sự kiện và giải đấu game.</p>
+                    </div>
+                  </div>
+                  <div class="feature-item">
+                    <i class="fas fa-star"></i>
+                    <div class="feature-text">
+                      <h4>Đánh giá chuyên sâu</h4>
+                      <p>Nhận xét chi tiết từ cộng đồng và chuyên gia về các tựa game.</p>
+                    </div>
+                  </div>
+                  <div class="feature-item">
+                    <i class="fas fa-users"></i>
+                    <div class="feature-text">
+                      <h4>Cộng đồng game thủ</h4>
+                      <p>Kết nối với những người chơi game có cùng sở thích trên toàn quốc.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6 mt-5" data-aos="fade-left">
+              <div id="reviewCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <div class="review-item">
+                      <p class="review-text">"Game Mood is amazing! I've discovered so many new games I would never have found otherwise. The community is great too!"</p>
+                      <p class="review-author">- John D.</p>
+                    </div>
+                  </div>
+                  <div class="carousel-item">
+                     <div class="review-item">
+                       <p class="review-text">"I love the detailed reviews and how easy it is to find games in specific categories. A must-have for every gamer."</p>
+                       <p class="review-author">- Sarah M.</p>
+                     </div>
+                  </div>
+                  <div class="carousel-item">
+                      <div class="review-item">
+                          <p class="review-text">"The new game recommendations are always spot on. I've been hooked to several games I found thanks to Game Mood."</p>
+                          <p class="review-author">- Emily S.</p>
+                      </div>
+                  </div>
+                  </div>
+                  <button class="carousel-control-prev" type="button" data-bs-target="#reviewCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#reviewCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-section" id="contact">
+        <div class="container">
+          <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+              <div class="contact-wrapper" data-aos="fade-up">
+                <h2 class="text-center">Liên hệ</h2>
+                <p class="text-center contact-subtitle">
+                  Gửi phản hồi hoặc đề xuất game mới cho chúng tôi
+                </p>
+
+                <form
+                  action="https://formsubmit.co/chauaurora9@gmail.com"
+                  method="POST"
+                  class="contact-form"
+                >
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <i class="fas fa-user input-icon"></i>
+                      <input
+                        type="text"
+                        name="Họ và tên"
+                        placeholder="Họ và tên"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <i class="fas fa-envelope input-icon"></i>
+                      <input
+                        type="email"
+                        name="Email"
+                        placeholder="Email"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <div class="input-wrapper">
+                      <i class="fas fa-message input-icon"></i>
+                      <textarea
+                        name="Nội dung"
+                        placeholder="Nội dung"
+                        rows="1"
+                        required
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <input
+                    type="hidden"
+                    name="_next"
+                    value="https://maingocchau9.github.io/JSA-46-SPCK/html/thank_you.html"
+                  />
+
+                  <button type="submit" class="submit-btn">
+                    <span>Gửi tin nhắn</span>
+                    <i class="fas fa-paper-plane"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-social" data-aos="fade-up">
+            <a href="#" class="social-link"
+              ><i class="fab fa-facebook-f"></i
+            ></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"
+              ><i class="fab fa-linkedin-in"></i
+            ></a>
+          </div>
+          <div class="footer-nav" data-aos="fade-up" data-aos-delay="100">
+            <a href="#">Về chúng tôi</a>
+            <a href="#">Điều khoản</a>
+            <a href="#">Riêng tư</a>
+            <a href="#">Liên hệ</a>
+          </div>
+          <p class="copyright" data-aos="fade-up" data-aos-delay="200">
+            Game Mood | © 2024
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <button id="scroll-to-top" class="scroll-top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="./js/index.js"></script>
+  </body>
+</html>

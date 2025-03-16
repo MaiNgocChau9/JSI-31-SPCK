@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý Tài khoản - Game Mood</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/admin.css" />
+  </head>
+  <body id="account-management">
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <i class="fas fa-gamepad brand-icon"></i>
+          Game Mood
+        </a>
+        <div class="theme-toggle-wrapper">
+          <button id="theme-toggle" class="btn btn-theme">
+            <i class="fas fa-sun theme-icon-light"></i>
+            <i class="fas fa-moon theme-icon-dark"></i>
+          </button>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav text-center">
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html#home">Trang chủ</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html#about">Giới thiệu</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html#contact">Liên hệ</a>
+            </li>
+            <li class="nav-item d-flex m-auto login_register">
+              <a class="btn btn-login" href="./html/login.html">Đăng nhập</a>
+              <a class="btn btn-register" href="./html/register.html"
+                >Đăng ký</a
+              >
+            </li>
+            <li class="nav-item d-flex m-auto">
+              <a class="btn userNameSection">Đăng xuất</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <main class="account-management-main">
+      <div class="container">
+        <div class="account-management-header">
+          <h1>Quản lý Tài khoản</h1>
+          <p class="header-description">
+            Quản lý và thay đổi vai trò người dùng trong hệ thống
+          </p>
+        </div>
+
+        <div class="account-management-content">
+          <div class="search-filter-section">
+            <div class="search-wrapper">
+              <input
+                type="text"
+                placeholder="Tìm kiếm người dùng..."
+                class="search-input"
+              />
+              <button class="search-btn">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="accounts-table-wrapper">
+            <table class="accounts-table">
+              <thead>
+                <tr>
+                  <th>Tên người dùng</th>
+                  <th>Email</th>
+                  <th>Vai trò</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Table content will be populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Role Change Modal -->
+    <div
+      class="modal fade"
+      id="roleModal"
+      tabindex="-1"
+      aria-labelledby="roleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="roleModalLabel">Chọn vai trò mới</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="role-option" data-role="ADMIN">
+              <i class="fas fa-user-shield fa-lg"></i>
+              <div>
+                <h6 class="mb-1">Admin</h6>
+                <p class="mb-0">Quản lý toàn bộ hệ thống và người dùng</p>
+              </div>
+            </div>
+            <div class="role-option" data-role="USER">
+              <i class="fas fa-user fa-lg"></i>
+              <div>
+                <h6 class="mb-1">User</h6>
+                <p class="mb-0">Sử dụng các tính năng cơ bản của hệ thống</p>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Hủy
+            </button>
+            <button type="button" class="btn btn-warning" id="saveRoleButton">
+              Lưu thay đổi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/admin.js"></script>
+  </body>
+</html>
