@@ -28,7 +28,7 @@
                         <input type="password" id="password" placeholder="Mật khẩu" required>
                     </div>
                 </div>
-                <button type="button" class="btn social-btn google-btn" id="google-signup-btn">
+                <button type="button" class="btn social-btn google-btn" id="google-login-btn">
                     <i class="fab fa-google"></i>
                     Login with Google
                 </button>
@@ -45,6 +45,6 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
     </script>
-    <script src="../js/login.js"></script>
+    <script type="module" src="../js/login.js"></script>
 </body>
 </html>

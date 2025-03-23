@@ -24,15 +24,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-function getElement(id) {
-    return document.getElementById(id);
-}
-
-const loginForm = getElement('loginForm');
-const signupForm = getElement('registerForm');
-const googleLoginBtn = getElement('google-login-btn');
-const logoutBtn = getElement('logout-btn');
-const userEmailDisplay = getElement('user-email');
+const loginForm = document.querySelector('#loginForm');
+const signupForm = document.querySelector('#registerForm');
+const googleLoginBtn = document.querySelector('#google-login-btn');
+const logoutBtn = document.querySelector('#logout-btn');
+const userEmailDisplay = document.querySelector('#user-email');
 
 //! Xử lý đăng nhập Email/Password
 if (loginForm) {
@@ -84,16 +80,13 @@ if (signupForm) {
 }
 
 //! Xử lý đăng nhập bằng Google
-if (googleLoginBtn) {
-    googleLoginBtn.addEventListener('click', () => {
-        signInWithPopup(auth, provider)
-            .then(() => {
-                alert("Đăng nhập Google thành công!");
-                window.location.href = 'logined.html';
-            })
-            .catch((error) => alert("Lỗi đăng nhập Google: " + error.message));
-    });
-}
+googleLoginBtn.addEventListener('click', () => {
+    signInWithPopup(auth, provider)
+        .then(() => {
+            window.location.href = '../index.html';
+        })
+        .catch((error) => alert("Lỗi đăng nhập Google: " + error.message));
+});
 
 //! Xử lý đăng xuất
 if (logoutBtn) {
@@ -110,7 +103,7 @@ if (logoutBtn) {
 onAuthStateChanged(auth, (user) => {
     if (user) {
         if (userEmailDisplay) {
-            userEmailDisplay.textContent = user.email;
+            userEmailDisplay.textContent = user.displayName || user.email;
         }
     } else {
         if (userEmailDisplay) {
