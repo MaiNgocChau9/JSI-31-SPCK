@@ -8,6 +8,7 @@ import {
     GoogleAuthProvider, 
     signInWithPopup 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyA8huygjO3NPAq3v42nGpbw9WiroQ3hWDs",
@@ -20,9 +21,11 @@ const firebaseConfig = {
     measurementId: "G-2VNGMVYMME"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+// Initialize Firebase
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const provider = new GoogleAuthProvider();
+export const firestore = await getFirestore(firebaseApp);
 
 const loginForm = document.querySelector('#loginForm');
 const signupForm = document.querySelector('#registerForm');

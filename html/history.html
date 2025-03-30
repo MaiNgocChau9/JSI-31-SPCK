@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Quản lý Tài khoản - Game Mood</title>
+    <title>Lịch sử Tìm kiếm - Game Mood</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -12,12 +12,14 @@
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
-    <link rel="stylesheet" href="../css/history.css" />
+    <link rel="stylesheet" href="../css/history.css" /> <!-- Link new CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
   </head>
-  <body id="account-management">
+  <body id="history-page">
+    <!-- Navbar (Copied from index.html, adjust relative paths) -->
     <nav class="navbar navbar-expand-lg fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="../index.html"> <!-- Adjusted path -->
           <i class="fas fa-gamepad brand-icon"></i>
           Game Mood
         </a>
@@ -44,122 +46,111 @@
         >
           <ul class="navbar-nav text-center">
             <li class="nav-item">
-              <a class="nav-link" href="../index.html#home">Trang chủ</a>
+              <a class="nav-link" href="../index.html#home">Trang chủ</a> <!-- Adjusted path -->
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../index.html#about">Giới thiệu</a>
+              <a class="nav-link" href="../index.html#about">Giới thiệu</a> <!-- Adjusted path -->
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="../index.html#contact">Liên hệ</a>
+              <a class="nav-link" href="../html/blogs.html">Bài viết</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html#contact">Liên hệ</a> <!-- Adjusted path -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Lịch sử</a> <!-- Active link -->
+            </li>
+            <li class="nav-item admin-manage d-none">
+              <a class="nav-link" href="./admin.html">Quản lí</a> <!-- Path correct -->
             </li>
             <li class="nav-item d-flex m-auto login_register">
-              <a class="btn btn-login" href="./html/login.html">Đăng nhập</a>
-              <a class="btn btn-register" href="./html/register.html"
-                >Đăng ký</a
-              >
+              <a class="btn btn-login" href="./login.html">Đăng nhập</a> <!-- Path correct -->
+              <a class="btn btn-register" href="./register.html">Đăng ký</a> <!-- Path correct -->
             </li>
             <li class="nav-item d-flex m-auto">
-              <a class="btn userNameSection">Đăng xuất</a>
+              <!-- Placeholder for user/logout, JS will handle visibility -->
+              <a class="btn userNameSection d-none">Đăng xuất</a>
             </li>
           </ul>
         </div>
       </div>
     </nav>
 
-    <main class="account-management-main">
+    <!-- Main Content -->
+    <main class="history-main">
       <div class="container">
-        <div class="account-management-header">
-          <h1>Quản lý Tài khoản</h1>
-          <p class="header-description">
-            Quản lý và thay đổi vai trò người dùng trong hệ thống
-          </p>
+        <div class="history-header text-center" data-aos="fade-up">
+          <h1>Lịch sử Tìm kiếm</h1>
+          <p class="header-description">Xem lại các truy vấn game trước đây của bạn.</p>
         </div>
 
-        <div class="account-management-content">
-          <div class="search-filter-section">
-            <div class="search-wrapper">
-              <input
-                type="text"
-                placeholder="Tìm kiếm người dùng..."
-                class="search-input"
-              />
-              <button class="search-btn">
-                <i class="fas fa-search"></i>
-              </button>
+        <div class="history-list">
+          <!-- Example History Item 1 -->
+          <div class="history-item" data-aos="fade-up" data-aos-delay="100">
+            <div class="history-item-content">
+                <i class="fas fa-search history-icon"></i>
+                <div class="history-details">
+                    <p class="history-query">Giới thiệu game giống Elden Ring</p>
+                    <span class="history-timestamp">Vào ngày 30/4/2025 lúc 7:30</span>
+                </div>
             </div>
+            <button class="btn rerun-btn">
+                Mở
+            </button>
           </div>
 
-          <div class="accounts-table-wrapper">
-            <table class="accounts-table">
-              <thead>
-                <tr>
-                  <th>Tên người dùng</th>
-                  <th>Email</th>
-                  <th>Vai trò</th>
-                  <th>Thao tác</th>
-                </tr>
-              </thead>
-              <tbody>
-                <!-- Table content will be populated by JavaScript -->
-              </tbody>
-            </table>
-          </div>
+            <!-- Example History Item 2 -->
+            <div class="history-item" data-aos="fade-up" data-aos-delay="200">
+            <div class="history-item-content">
+              <i class="fas fa-search history-icon"></i>
+              <div class="history-details">
+                <p class="history-query">Game FPS mới nhất 2024</p>
+                <span class="history-timestamp">Vào ngày 25/05/2024 lúc 14:45</span>
+              </div>
+            </div>
+            <button class="btn rerun-btn">
+              Mở
+            </button>
+            </div>
+
+            <!-- Example History Item 3 -->
+             <div class="history-item" data-aos="fade-up" data-aos-delay="300">
+             <div class="history-item-content">
+               <i class="fas fa-search history-icon"></i>
+               <div class="history-details">
+                 <p class="history-query">Tìm game MOBA đồ họa đẹp cho PC cấu hình yếu</p>
+                 <span class="history-timestamp">Vào ngày 15/07/2024 lúc 9:20</span>
+               </div>
+             </div>
+             <button class="btn rerun-btn">
+               Mở
+             </button>
+             </div>
+
+          <!-- Add more history items here as needed -->
+
         </div>
       </div>
     </main>
 
-    <!-- Role Change Modal -->
-    <div
-      class="modal fade"
-      id="roleModal"
-      tabindex="-1"
-      aria-labelledby="roleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="roleModalLabel">Chọn vai trò mới</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div class="modal-body">
-            <div class="role-option" data-role="ADMIN">
-              <i class="fas fa-user-shield fa-lg"></i>
-              <div>
-                <h6 class="mb-1">Admin</h6>
-                <p class="mb-0">Quản lý toàn bộ hệ thống và người dùng</p>
-              </div>
-            </div>
-            <div class="role-option" data-role="USER">
-              <i class="fas fa-user fa-lg"></i>
-              <div>
-                <h6 class="mb-1">User</h6>
-                <p class="mb-0">Sử dụng các tính năng cơ bản của hệ thống</p>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-bs-dismiss="modal"
-            >
-              Hủy
-            </button>
-            <button type="button" class="btn btn-warning" id="saveRoleButton">
-              Lưu thay đổi
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Scroll-to-top Button (Copied from index.html) -->
+    <button id="scroll-to-top" class="scroll-top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/history.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/switch_theme.js"></script>
+    <script>
+      // Initialize AOS
+      AOS.init({
+          duration: 800,
+          once: true,
+          offset: 50 // Adjusted offset for list items
+      });
+
+      // Scroll to Top logic (copied, no functionality needed for static example)
+      const scrollTopButton = document.getElementById('scroll-to-top');
+    </script>
   </body>
 </html>

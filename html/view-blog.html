@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chi Tiết Bài Viết - Game Mood</title> <!-- Title will be dynamic later -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Reuse blogs.css or create view-blog.css if needed -->
+    <link rel="stylesheet" href="../css/blogs.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+  </head>
+  <body id="view-blog-page">
+    <!-- Navbar (Copied from index.html, adjust relative paths) -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="../index.html"> <!-- Adjusted path -->
+          <i class="fas fa-gamepad brand-icon"></i>
+          Game Mood
+        </a>
+        <div
+        class="collapse navbar-collapse justify-content-end"
+        id="navbarNav"
+        >
+        <div class="theme-toggle-wrapper">
+          <button id="theme-toggle" class="btn btn-theme">
+            <i class="fas fa-sun theme-icon-light"></i>
+            <i class="fas fa-moon theme-icon-dark"></i>
+          </button>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+           <ul class="navbar-nav text-center">
+             <li class="nav-item">
+               <a class="nav-link" href="../index.html#home">Trang chủ</a> <!-- Adjusted path -->
+             </li>
+             <li class="nav-item">
+               <a class="nav-link" href="../index.html#about">Giới thiệu</a> <!-- Adjusted path -->
+             </li>
+             <li class="nav-item">
+                 <a class="nav-link" href="./blogs.html">Bài viết</a> <!-- Link back -->
+             </li>
+             <li class="nav-item">
+               <a class="nav-link" href="../index.html#contact">Liên hệ</a> <!-- Adjusted path -->
+             </li>
+             <li class="nav-item">
+               <a class="nav-link" href="./history.html">Lịch sử</a> <!-- Path correct -->
+             </li>
+             <li class="nav-item admin-manage d-none">
+               <a class="nav-link" href="./admin.html">Quản lí</a> <!-- Path correct -->
+             </li>
+             <li class="nav-item d-flex m-auto login_register">
+               <a class="btn btn-login" href="./login.html">Đăng nhập</a> <!-- Path correct -->
+               <a class="btn btn-register" href="./register.html">Đăng ký</a> <!-- Path correct -->
+             </li>
+             <li class="nav-item d-flex m-auto">
+               <!-- Placeholder for user/logout -->
+               <a class="btn userNameSection d-none">Đăng xuất</a>
+             </li>
+           </ul>
+        </div>
+      </div>
+    </nav>
+
+<!-- Main Content -->
+<main class="view-blog-main">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-9">
+          <article class="blog-post-content" data-aos="fade-up">
+            <!-- Back Button -->
+            <div class="mb-4">
+              <a href="./blogs.html" class="btn back-btn"><i class="fas fa-arrow-left"></i> Quay lại danh sách</a>
+            </div>
+  
+            <!-- Post Header -->
+            <header class="post-header">
+              <h1 class="post-title">Top 5 Game Indie Đáng Chơi Nhất Hè 2024</h1>
+              <p class="post-meta">
+                <i class="fas fa-user"></i> Admin <span class="mx-2">|</span>
+                <i class="fas fa-calendar-alt"></i> 20/07/2024 <span class="mx-2">|</span>
+                <i class="fas fa-folder"></i> <a href="#" class="meta-link">Indie Games</a>, <a href="#" class="meta-link">Reviews</a>
+              </p>
+            </header>
+  
+            <!-- Post Body -->
+            <div class="post-body">
+              <h2>1. Balatro</h2>
+              <p>Balatro là một trò chơi kết hợp giữa poker và yếu tố roguelike, nơi bạn xây dựng bộ bài mạnh mẽ để đánh bại đối thủ. Trò chơi này đã giành nhiều giải thưởng lớn tại The Game Awards 2024.</p>
+              <img src="https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/2379780/ss_d17a3adc6176c7f99e0dc31c49f4764f137e6374.600x338.jpg" class="img-fluid rounded my-3" alt="Balatro Screenshot">
+  
+              <h2>2. Nine Sols</h2>
+              <p>Đây là tựa game hành động lấy cảm hứng từ văn hóa phương Đông và cyberpunk. Người chơi sẽ vào vai Yi trong hành trình trả thù và lật đổ Nine Sols, kẻ thống trị độc tài.</p>
+              <img src="https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/1809540/ss_628bc8052f48cd68ae42e4b54c3a9af97f560c06.600x338.jpg" class="img-fluid rounded my-3" alt="Nine Sols Screenshot">
+  
+              <h2>3. Animal Well</h2>
+              <p>Animal Well là một trò chơi metroidvania tập trung vào giải đố. Bạn sẽ khám phá một mê cung bí ẩn với những câu đố hấp dẫn thay vì tập trung vào chiến đấu.</p>
+              <img src="https://shared.cloudflare.steamstatic.com/store_item_assets/steam/apps/813230/ss_f9f088275737d81e0eb998e0c076282c5c1955c3.600x338.jpg" class="img-fluid rounded my-3" alt="Animal Well Screenshot">
+  
+              <h2>4. Another Crab’s Treasure</h2>
+              <p>Another Crab’s Treasure là một game phiêu lưu hành động kết hợp yếu tố soulslike. Bạn sẽ vào vai Kril, một chú cua nhỏ, trong hành trình chống lại chính phủ tham nhũng.</p>
+              <img src="https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/1887840/header.jpg?t=1737417829" class="img-fluid rounded my-3" alt="Another Crab’s Treasure Screenshot">
+  
+              <br><h2>Tổng Kết</h2>
+              <p>Những tựa game indie này không chỉ mang đến trải nghiệm mới mẻ mà còn thể hiện sự sáng tạo của các nhà phát triển độc lập. Hãy thử và tận hưởng mùa hè 2024 với những trò chơi này!</p>
+            </div>
+  
+            <!-- Tags -->
+            <div class="post-tags mt-4">
+              <strong>Tags:</strong>
+              <a href="#" class="tag-link">Indie</a>
+              <a href="#" class="tag-link">Puzzle</a>
+              <a href="#" class="tag-link">Adventure</a>
+              <a href="#" class="tag-link">2024</a>
+            </div>
+          </article>
+  
+          <!-- Comments Section -->
+          <section class="comments-section mt-5" data-aos="fade-up">
+              <h3 class="section-title">Bình luận</h3>
+              <p>(Khu vực bình luận sẽ được thêm sau)</p>
+          </section>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+
+    <!-- Footer -->
+     <footer class="footer">
+       <div class="container">
+         <div class="footer-content">
+           <div class="footer-social" data-aos="fade-up">
+              <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+              <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+              <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+              <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+           </div>
+           <div class="footer-nav" data-aos="fade-up" data-aos-delay="100">
+              <a href="#">Về chúng tôi</a>
+              <a href="#">Điều khoản</a>
+              <a href="#">Riêng tư</a>
+              <a href="../index.html#contact">Liên hệ</a>
+           </div>
+           <p class="copyright" data-aos="fade-up" data-aos-delay="200">
+              Game Mood | © 2024
+           </p>
+         </div>
+       </div>
+      </footer>
+
+    <!-- Scroll-to-top Button -->
+    <button id="scroll-to-top" class="scroll-top">
+      <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="../js/switch_theme.js"></script>
+    <script>
+      // Initialize AOS
+      AOS.init({
+          duration: 800,
+          once: true,
+          offset: 100
+      });
+
+      // Scroll to Top logic (static placeholder)
+      const scrollTopButton = document.getElementById('scroll-to-top');
+    </script>
+  </body>
+</html>
