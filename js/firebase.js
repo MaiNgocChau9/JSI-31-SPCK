@@ -9,6 +9,7 @@ import {
     signInWithPopup 
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 import { getFirestore } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js";
+import Users, { getUser, addUser} from "../components/users.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyA8huygjO3NPAq3v42nGpbw9WiroQ3hWDs",
@@ -22,24 +23,25 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
+export const firebaseApp = initializeApp(firebaseConfig);
+export const auth = getAuth(firebaseApp);
 export const provider = new GoogleAuthProvider();
 export const firestore = await getFirestore(firebaseApp);
 
 const loginForm = document.querySelector('#loginForm');
 const signupForm = document.querySelector('#registerForm');
 const googleLoginBtn = document.querySelector('#google-login-btn');
+const googleSignupBtn = document.querySelector('#google-signup-btn');
 const logoutBtn = document.querySelector('#logout-btn');
 const userEmailDisplay = document.querySelector('#user-email');
 
 //! Xử lý đăng nhập Email/Password
 if (loginForm) {
-    loginForm.addEventListener('submit', (e) => {
+    loginForm?.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const email = getElement('email').value;
-        const password = getElement('password').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
         
         if (!email || !password) {
             alert('Vui lòng nhập đầy đủ thông tin!');
@@ -47,7 +49,11 @@ if (loginForm) {
         }
         
         signInWithEmailAndPassword(auth, email, password)
-            .then(() => {
+            .then(async() => {
+                // Lưu dữ liệu người dùng vào Firestore
+                const user = await getUser(email);
+                console.log(user);
+                
                 window.location.href = './index.html';
             })
             .catch((error) => alert(error.message));
@@ -56,14 +62,15 @@ if (loginForm) {
 
 //! Xử lý đăng ký Email/Password
 if (signupForm) {
-    signupForm.addEventListener('submit', (e) => {
+    signupForm?.addEventListener('submit', (e) => {
         e.preventDefault();
         
-        const email = getElement('email').value;
-        const password = getElement('password').value;
-        const confirmPassword = getElement('confirmPassword').value;
+        const username = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
         
-        if (!email || !password || !confirmPassword) {
+        if (!email || !password || !confirmPassword || !username) {
             alert('Vui lòng nhập đầy đủ thông tin!');
             return;
         }
@@ -74,18 +81,46 @@ if (signupForm) {
         }
         
         createUserWithEmailAndPassword(auth, email, password)
-            .then(() => {
+            .then(async () => {
+                // Lưu dữ liệu người dùng vào Firestore
+                const newUser = new Users(username, email);
+                await addUser(newUser);
                 alert('Đăng ký thành công!');
-                window.location.href = './index.html';
+                
+                window.location.href = '../index.html';
             })
             .catch((error) => alert(error.message));
     });
 }
 
 //! Xử lý đăng nhập bằng Google
-googleLoginBtn.addEventListener('click', () => {
+googleLoginBtn?.addEventListener('click', () => {
     signInWithPopup(auth, provider)
-        .then(() => {
+        .then(async() => {
+            // Lưu dữ liệu người dùng vào Firestore
+            const user = await getUser(auth.currentUser.email);
+            console.log(user);
+
+            window.location.href = '../index.html';
+        })
+        .catch((error) => alert("Lỗi đăng nhập Google: " + error.message));
+});
+
+//! Xử lý đăng kí bằng Google
+googleSignupBtn?.addEventListener('click', () => {
+    
+    signInWithPopup(auth, provider)
+        .then(async () => {
+            // Lưu dữ liệu người dùng vào Firestore
+            const user = auth.currentUser;
+            // console.log(user);
+            if(await getUser(user.email)) {
+                alert("Người dùng đã tồn tại");
+                throw new Error("Người dùng đã tồn tại");
+            }
+            const newUser = new Users(user.displayName, user.email, "USER", user.photoURL);
+            await addUser(newUser);
+
             window.location.href = '../index.html';
         })
         .catch((error) => alert("Lỗi đăng nhập Google: " + error.message));
@@ -93,10 +128,10 @@ googleLoginBtn.addEventListener('click', () => {
 
 //! Xử lý đăng xuất
 if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+    logoutBtn?.addEventListener('click', () => {
         signOut(auth)
             .then(() => {
-                window.location.href = 'index.html';
+                window.location.href = '../index.html';
             })
             .catch((error) => alert('Lỗi đăng xuất: ' + error.message));
     });
@@ -114,3 +149,5 @@ onAuthStateChanged(auth, (user) => {
         }
     }
 });
+
+console.log(auth.currentUser);

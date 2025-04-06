@@ -40,11 +40,11 @@
                         <input type="password" id="confirmPassword" placeholder="Xác nhận mật khẩu" required>
                     </div>
                 </div>
+                <button type="submit">Đăng ký</button>
                 <button type="button" class="btn social-btn google-btn" id="google-signup-btn">
                     <i class="fab fa-google"></i>
-                    Login with Google
+                    Signup with Google
                 </button>
-                <button type="submit">Đăng ký</button>
             </form>
             <div class="login-link">
                 Đã có tài khoản? <a href="login.html">Đăng nhập</a>
@@ -57,6 +57,6 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.documentElement.setAttribute('data-theme', savedTheme);
     </script>
-    <script src="../js/register.js"></script>
+    <script type="module" src="../js/firebase.js"></script>
 </body>
 </html>
