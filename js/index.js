@@ -76,7 +76,8 @@ categoryCards.forEach(card => {
 
 const userNameSection = document.querySelector(".userNameSection");
 const login_register = document.querySelector(".login_register");
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
+console.log(currentUser);
 
 if (currentUser && window.innerWidth < 991){
     userNameSection.textContent = "Đăng xuất";
@@ -85,7 +86,7 @@ if (currentUser && window.innerWidth < 991){
 }
 // Here
 else if (currentUser) {
-    userNameSection.textContent = `✦ ${currentUser.name} ✦`;
+    userNameSection.textContent = `✦ ${currentUser[0].name} ✦`;
     userNameSection.classList.remove("d-none");
     login_register.classList.add("d-none");
 }
@@ -96,20 +97,13 @@ else {
     login_register.classList.remove("d-none");
 }
 
-userNameSection.addEventListener("click", () => {
-    if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-        localStorage.removeItem("currentUser");
-        window.location.href = "./index.html";
-    }
-});
-
 userNameSection.addEventListener('mouseover', () => {
     userNameSection.textContent = 'Đăng xuất';
 });
 
 userNameSection.addEventListener('mouseout', () => {
     if (currentUser && window.innerWidth > 992) {
-        userNameSection.textContent = `✦ ${currentUser.name} ✦`;
+        userNameSection.textContent = `✦ ${currentUser[0].name} ✦`;
     } else if(currentUser) {
         userNameSection.textContent = "Đăng xuất";
     }

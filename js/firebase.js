@@ -32,7 +32,7 @@ const loginForm = document.querySelector('#loginForm');
 const signupForm = document.querySelector('#registerForm');
 const googleLoginBtn = document.querySelector('#google-login-btn');
 const googleSignupBtn = document.querySelector('#google-signup-btn');
-const logoutBtn = document.querySelector('#logout-btn');
+const userNameSection = document.querySelector(".userNameSection");
 const userEmailDisplay = document.querySelector('#user-email');
 
 //! Xử lý đăng nhập Email/Password
@@ -127,13 +127,16 @@ googleSignupBtn?.addEventListener('click', () => {
 });
 
 //! Xử lý đăng xuất
-if (logoutBtn) {
-    logoutBtn?.addEventListener('click', () => {
-        signOut(auth)
-            .then(() => {
-                window.location.href = '../index.html';
-            })
-            .catch((error) => alert('Lỗi đăng xuất: ' + error.message));
+if (userNameSection) {
+    userNameSection?.addEventListener('click', () => {
+        if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+            signOut(auth)
+                .then(() => {
+                    localStorage.removeItem("currentUser");
+                    window.location.href = './index.html';
+                })
+                .catch((error) => alert('Lỗi đăng xuất: ' + error.message));
+        }
     });
 }
 
@@ -143,11 +146,17 @@ onAuthStateChanged(auth, (user) => {
         if (userEmailDisplay) {
             userEmailDisplay.textContent = user.displayName || user.email;
         }
+        console.log("Current user:", user); // Add this line to check user details
+        localStorage.setItem('currentUser', JSON.stringify([{
+            name: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            role: user.role || "USER",
+        }]));
     } else {
         if (userEmailDisplay) {
             userEmailDisplay.textContent = "Không xác định";
         }
+        console.log("No user signed in"); // Add this line to confirm when no user is signed in
     }
 });
-
-console.log(auth.currentUser);
