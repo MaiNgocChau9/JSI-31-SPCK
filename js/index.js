@@ -74,67 +74,6 @@ categoryCards.forEach(card => {
     });
 });
 
-const userNameSection = document.querySelector(".userNameSection");
-const login_register = document.querySelector(".login_register");
-const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
-console.log(currentUser);
-
-if (currentUser && window.innerWidth < 991){
-    userNameSection.textContent = "Đăng xuất";
-    userNameSection.classList.remove("d-none");
-    login_register.classList.add("d-none");
-}
-// Here
-else if (currentUser) {
-    userNameSection.textContent = `✦ ${currentUser[0].name} ✦`;
-    userNameSection.classList.remove("d-none");
-    login_register.classList.add("d-none");
-}
-
-else {
-    userNameSection.textContent = "";
-    userNameSection.classList.add("d-none");
-    login_register.classList.remove("d-none");
-}
-
-userNameSection.addEventListener('mouseover', () => {
-    userNameSection.textContent = 'Đăng xuất';
-});
-
-userNameSection.addEventListener('mouseout', () => {
-    if (currentUser && window.innerWidth > 992) {
-        userNameSection.textContent = `✦ ${currentUser[0].name} ✦`;
-    } else if(currentUser) {
-        userNameSection.textContent = "Đăng xuất";
-    }
-});
-
-let searchButton = document.getElementsByClassName("search-btn");
-let searchInput = document.getElementsByClassName("search-input");
-
-searchButton[0].addEventListener("click", () => {
-    if (currentUser) {
-        if (searchInput[0].value) {
-            localStorage.setItem("searchValue", searchInput[0].value);
-            window.location.href = "./html/process.html";
-        }
-    } else {
-        alert("Vui lòng đăng nhập để sử dụng tính năng này!");
-        window.location.href = "./html/login.html";
-    }
-});
-
-let exploreButton = document.getElementsByClassName("explore-btn");
-exploreButton[0].addEventListener("click", () => {
-    if (currentUser) {
-        localStorage.setItem("searchValue", "Giới thiệu cho tôi những tựa game bom tấn vừa ra mắt và sắp phát hành");
-        window.location.href = "./html/process.html";
-    } else {
-        alert("Vui lòng đăng nhập để sử dụng tính năng này!");
-        window.location.href = "./html/login.html";
-    }
-});
-
 categoryCards.forEach(card => {
     card.addEventListener('mouseenter', () => {
         card.style.transform = 'translateY(-10px)';

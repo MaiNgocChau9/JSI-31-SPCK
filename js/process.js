@@ -220,6 +220,26 @@ function updateUI(data) {
   }
 }
 
+function saveToHistory(data, createdBy = "unknown", createdAt = new Date().toLocaleString("vi-VN")) {
+  const historyItem = {
+    title: data.title,
+    image: data.imageUrl,
+    genres: data.genres,
+    description: data.description,
+    features: data.features,
+    system_requirements: data.system_requirements,
+    similar_games: data.similar_games,
+    createdBy: createdBy,
+    createdAt: createdAt,
+    imageUrl: data.imageUrl,
+  };
+
+  let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+  history.unshift(historyItem);
+
+  localStorage.setItem('searchHistory', JSON.stringify(history));
+}
+
 async function initializeApp() {
   const searchValue = localStorage.getItem("searchValue");
   if (searchValue) {
@@ -228,8 +248,8 @@ async function initializeApp() {
       const data = await getGameData(searchValue);
       if (data) {
         updateUI(data);
-      } else {
-        console.error("Không thể lấy dữ liệu game.");
+        saveToHistory(data);
+        console.log(data)
       }
     } catch (error) {
       console.error("Lỗi khi gọi API hoặc xử lý dữ liệu:", error);

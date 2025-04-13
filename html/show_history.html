@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thông tin tựa game</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../css/process.css" />
+    <script type="importmap">
+      {
+        "imports": {
+          "@google/generative-ai": "https://esm.run/@google/generative-ai"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <a href="./history.html" class="home-button">
+      <i class="fa-solid fa-arrow-left"></i>
+      <span>Trở về trang chủ</span>
+    </a>
+    <div id="loading-screen">
+      <div class="spinner"></div>
+      <p class="loading-text">Đang tải thông tin game...</p>
+    </div>
+
+    <div class="game-preview">
+      <img
+        src="https://images.unsplash.com/photo-1509198397868-475647b2a1e5?q=80&w=1847&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        alt="Ảnh xem trước game"
+      />
+    </div>
+
+    <div class="card">
+      <div class="card-content">
+        <h1 class="card-title"></h1>
+        <div class="genre-tags"></div>
+
+        <div class="section">
+          <h3 class="section-title">Giới thiệu</h3>
+          <p class="description"></p>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Tính Năng</h3>
+          <div class="features-grid"></div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Yêu Cầu Hệ Thống</h3>
+          <div class="requirements"></div>
+        </div>
+
+        <div class="section">
+          <h3 class="section-title">Game Tương Tự</h3>
+          <div class="similar-games"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const savedTheme = localStorage.getItem("theme") || "light";
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    
+      const showHistory = JSON.parse(localStorage.getItem("showHistory"));
+      console.log(showHistory);
+
+      function updateUI(data) {
+        const gamePreviewImage = document.querySelector(".game-preview img");
+        if (gamePreviewImage) {
+          gamePreviewImage.src = data.image;
+          gamePreviewImage.alt = data.title;
+        }
+
+        const cardTitle = document.querySelector(".card-title");
+        if (cardTitle && data.title) {
+          cardTitle.textContent = data.title;
+        }
+
+        const genreTagsContainer = document.querySelector(".genre-tags");
+        if (genreTagsContainer && data.genres) {
+          genreTagsContainer.innerHTML = "";
+          data.genres.forEach((genre) => {
+            const tag = document.createElement("span");
+            tag.classList.add("genre-tag");
+            tag.textContent = genre;
+            genreTagsContainer.appendChild(tag);
+          });
+        }
+
+        const description = document.querySelector(".description");
+        if (description && data.description) {
+          description.innerHTML = data.description;
+        }
+
+        const featuresGrid = document.querySelector(".features-grid");
+        if (featuresGrid && data.features) {
+          featuresGrid.innerHTML = "";
+          data.features.forEach((feature) => {
+            const featureDiv = document.createElement("div");
+            featureDiv.classList.add("feature");
+            featureDiv.innerHTML = `
+        <i class="${feature.icon}"></i>
+        <span>${feature.info}</span>
+      `;
+            featuresGrid.appendChild(featureDiv);
+          });
+        }
+
+        const requirementsContainer = document.querySelector(".requirements");
+        if (requirementsContainer && data.system_requirements) {
+          requirementsContainer.innerHTML = "";
+          data.system_requirements.forEach((req) => {
+            const reqDiv = document.createElement("div");
+            reqDiv.classList.add("requirement");
+            reqDiv.innerHTML = `
+        <i class="${req.icon} icon"></i>
+        <span>${req.name}: ${req.value}</span>
+      `;
+            requirementsContainer.appendChild(reqDiv);
+          });
+        }
+
+        // Update the similar games section in updateUI function
+        const similarGamesContainer = document.querySelector(".similar-games");
+        if (
+          similarGamesContainer &&
+          data.similar_games &&
+          data.similar_games.length > 0
+        ) {
+          similarGamesContainer.innerHTML = "";
+          data.similar_games.forEach((game) => {
+            const gameDiv = document.createElement("div");
+            gameDiv.classList.add("similar-game-card");
+            gameDiv.innerHTML = `
+        <div class="similar-game-icon">
+          <i class="${game.icon}"></i>
+        </div>
+        <div class="similar-game-info">
+          <h4>${game.name}</h4>
+        </div>
+      `;
+            similarGamesContainer.appendChild(gameDiv);
+          });
+        }
+      }
+
+      updateUI(showHistory);
+    </script>
+    <script src="../js/updateUserElement.js"></script>
+  </body>
+</html>
