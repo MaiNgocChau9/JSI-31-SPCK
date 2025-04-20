@@ -1,5 +1,3 @@
-// js/theme.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
     const htmlElement = document.documentElement; // Target the <html> element for data-theme

@@ -1,4 +1,4 @@
-/* --- Theme Variables (Copy from existing e.g., blogs.css) --- */
+/* --- Theme Variables (from existing project) --- */
 :root[data-theme="light"] {
   --text: #0c0b08;
   --background: #fcfbf8;
@@ -7,15 +7,14 @@
   --accent: #ddc05f;
   --card-bg: #ffffff;
   --border-color: rgba(181, 157, 75, 0.2);
-  --input-bg: #ffffff;
-  --input-border: var(--border-color);
-  --input-focus-border: var(--primary);
-  --input-focus-shadow: rgba(181, 156, 74, 0.2);
-  --toolbar-bg: var(--card-bg);
-  --toolbar-button-bg: #f0f0f0;
-  --toolbar-button-border: #ccc;
-  --toolbar-button-hover-bg: #e0e0e0;
-  --toolbar-separator-color: #ccc;
+  --navbar-shadow: rgba(0, 0, 0, 0.1);
+  --button-bg: #f0f0f0;
+  --button-border: #ccc;
+  --button-hover-bg: #e0e0e0;
+  --input-text: #333;
+  --input-bg: transparent;
+  --iframe-bg: #ffffff; /* Background for editor iframe */
+  --iframe-text: #333333; /* Text color for editor iframe */
 }
 
 :root[data-theme="dark"] {
@@ -26,156 +25,260 @@
   --accent: #a08222;
   --card-bg: #1a1a1a;
   --border-color: rgba(181, 157, 75, 0.4);
-  --input-bg: #2b2b2b;
-  --input-border: var(--border-color);
-  --input-focus-border: var(--primary);
-  --input-focus-shadow: rgba(181, 156, 74, 0.3);
-  --toolbar-bg: var(--card-bg);
-  --toolbar-button-bg: #333;
-  --toolbar-button-border: #555;
-  --toolbar-button-hover-bg: #444;
-  --toolbar-separator-color: #555;
+  --navbar-shadow: rgba(255, 255, 255, 0.1);
+  --button-bg: #2a2a2a;
+  --button-border: #444;
+  --button-hover-bg: #383838;
+  --input-text: #f7f6f3;
+  --input-bg: transparent;
+  --iframe-bg: #1e1e1e; /* Dark background for editor iframe */
+  --iframe-text: #f0f0f0; /* Light text color for editor iframe */
 }
 
-/* --- General Body & Main Styles --- */
-body#new-post-page {
+/* --- Global Styles --- */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
+* {
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
+}
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--secondary) var(--background);
+}
+body {
+  margin: 0;
+  padding: 20px;
   background-color: var(--background);
   color: var(--text);
-  font-family: system-ui, -apple-system, sans-serif;
   transition: background-color 0.3s, color 0.3s;
-  padding-top: 76px; /* Match other pages */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
-
-main.new-post-main {
-  flex: 1; /* Push footer down */
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background: var(--background);
+}
+body::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 4px;
 }
 
-/* --- Header Area --- */
+/* --- Editor Styles --- */
 .editor-header {
-    /* Add spacing or specific styles if needed */
+  display: flex;
+  justify-content: space-between; /* Align items */
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: var(--card-bg);
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 #title-input {
-  background-color: var(--input-bg);
-  color: var(--text);
-  border: 1px solid var(--input-border);
+  flex-grow: 1; /* Take available space */
+  border: none;
+  outline: none;
+  font-size: 1.8rem; /* Slightly smaller */
   font-weight: bold;
-  font-size: 1.75rem; /* Adjust as needed */
-  padding: 0.75rem 1rem;
-}
-#title-input:focus {
-  border-color: var(--input-focus-border);
-  box-shadow: 0 0 0 3px var(--input-focus-shadow);
-  background-color: var(--input-bg); /* Ensure background stays */
-  color: var(--text); /* Ensure text color stays */
+  padding: 5px 0; /* Adjust padding */
+  background-color: var(--input-bg);
+  color: var(--input-text);
+  margin-right: 20px; /* Space before buttons */
 }
 #title-input::placeholder {
-    color: var(--meta-color); /* Use meta color for placeholder */
-    font-weight: normal;
+  color: var(--secondary);
+  opacity: 0.7;
 }
 
+.header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between buttons */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+}
 
-/* Buttons using project style */
+.header-buttons button,
+.header-buttons a button {
+  padding: 8px 15px;
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
+  color: var(--text);
+  border-radius: 5px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+.header-buttons a {
+  text-decoration: none;
+}
+
+.header-buttons button:hover,
+.header-buttons a button:hover {
+  background-color: var(--button-hover-bg);
+}
+
 #add-post-btn {
+  /* Style the post button specifically */
   background-color: var(--primary);
+  color: var(--background);
   border-color: var(--primary);
-  color: var(--background); /* Text color for primary button */
 }
 #add-post-btn:hover {
   background-color: var(--accent);
   border-color: var(--accent);
 }
 
-/* --- Toolbar Styles --- */
 #toolbar {
   display: flex;
   align-items: center;
-  background-color: var(--toolbar-bg);
+  margin-bottom: 20px;
+  background-color: var(--card-bg);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border-color);
-  padding: 0.5rem;
-  border-radius: 0.5rem;
-  overflow-x: auto; /* Enable horizontal scroll on small screens */
-  white-space: nowrap; /* Prevent wrapping */
+  overflow-x: auto;
+  white-space: nowrap;
+}
+#toolbar::-webkit-scrollbar {
+  height: 6px;
+}
+#toolbar::-webkit-scrollbar-thumb {
+  background-color: var(--secondary);
+  border-radius: 3px;
 }
 
-/* Toolbar scrollbar */
-#toolbar::-webkit-scrollbar { height: 6px; }
-#toolbar::-webkit-scrollbar-track { background: transparent; }
-#toolbar::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 3px; }
-#toolbar::-webkit-scrollbar-thumb:hover { background-color: var(--primary); }
-
-#toolbar .toolbar-group {
-    display: flex;
-    align-items: center;
-}
-
-#toolbar button.btn-toolbar, #toolbar select.form-select-sm {
-  margin-right: 0.25rem;
-  background-color: var(--toolbar-button-bg);
-  border: 1px solid var(--toolbar-button-border);
+#toolbar button,
+#toolbar select {
+  margin-right: 8px;
+  padding: 6px 10px; /* Slightly smaller padding */
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
   color: var(--text);
-  padding: 0.3rem 0.6rem; /* Smaller padding */
-  font-size: 0.9rem; /* Slightly smaller font */
-  border-radius: 0.25rem;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
-  flex-shrink: 0; /* Prevent shrinking */
+  font-size: 0.9rem; /* Consistent font size */
+  flex-shrink: 0;
 }
-#toolbar button.btn-toolbar:hover, #toolbar select.form-select-sm:hover {
-  background-color: var(--toolbar-button-hover-bg);
-}
-#toolbar select.form-select-sm {
-    max-width: 120px; /* Limit select width */
+#toolbar button:hover,
+#toolbar select:hover {
+  background-color: var(--button-hover-bg);
 }
 
-
+.toolbar-group {
+  display: flex;
+  align-items: center;
+}
 .toolbar-separator {
-  height: 24px;
+  height: 20px; /* Adjusted height */
   width: 1px;
-  background-color: var(--toolbar-separator-color);
-  margin: 0 0.75rem;
+  background-color: var(--border-color);
+  margin: 0 10px;
   flex-shrink: 0;
 }
 
-/* --- Editor Container --- */
 #editor-container {
   width: 100%;
-  /* Adjust height as needed, maybe use vh or calc */
-  height: calc(100vh - 300px); /* Example: Adjust based on navbar, header, toolbar, footer */
-  min-height: 400px; /* Minimum editing height */
+  height: calc(100vh - 260px); /* Adjust based on final header/toolbar height */
   border: 1px solid var(--border-color);
-  padding: 0; /* Remove padding if iframe has its own */
+  padding: 0;
   box-sizing: border-box;
-  background-color: var(--card-bg); /* Or --background */
-  border-radius: 0.5rem;
-  overflow: hidden; /* Hide iframe scrollbars if needed, let iframe handle scrolling */
+  background-color: var(--iframe-bg); /* Use theme variable */
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevents iframe overflow issues */
+  flex-grow: 1; /* Allow container to grow */
 }
 
 #editor {
   width: 100%;
   height: 100%;
   border: none; /* Remove iframe default border */
-  display: block; /* Remove potential inline spacing */
 }
 
-/* --- Footer & Scroll Top (Assume they are styled globally or in blogs.css) --- */
-
-/* --- Responsive Adjustments --- */
-@media (max-width: 767.98px) {
-    #title-input { font-size: 1.5rem; }
-    #editor-container { height: calc(100vh - 320px); min-height: 300px; }
-    #toolbar { padding: 0.4rem; }
-    #toolbar button.btn-toolbar, #toolbar select.form-select-sm { font-size: 0.85rem; padding: 0.25rem 0.5rem; }
-    .toolbar-separator { margin: 0 0.5rem; }
+/* Ẩn hoàn toàn nút chèn ảnh từ máy */
+#imageFileBtn,
+#imageInput {
+  display: none !important;
 }
 
-@media (max-width: 575.98px) {
-    main.new-post-main { padding: 3rem 0; } /* Reduce padding on small screens */
-    #title-input { font-size: 1.3rem; }
-     .editor-header .d-flex { flex-direction: column; align-items: stretch; gap: 0.5rem !important; } /* Stack buttons */
-     #editor-container { height: calc(100vh - 350px); min-height: 250px; border-radius: 0; border-left: 0; border-right: 0;}
-     #toolbar { border-radius: 0; margin-left: -0.75rem; margin-right: -0.75rem; padding-left: 0.75rem; padding-right: 0.75rem;} /* Full width toolbar */
- }
+/* Responsive adjustments for editor area */
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+    padding-top: 70px;
+  }
+  .editor-header {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 10px;
+  }
+  #title-input {
+    margin-right: 0;
+    margin-bottom: 10px;
+    font-size: 1.5rem;
+  }
+  .header-buttons {
+    justify-content: flex-end;
+  }
+  #toolbar {
+    padding: 8px;
+  }
+  #toolbar button,
+  #toolbar select {
+    padding: 5px 8px;
+    font-size: 0.85rem;
+  }
+  #editor-container {
+    height: calc(100vh - 280px);
+  } /* Recalculate height */
+}
+@media (max-width: 480px) {
+  #editor-container {
+    height: calc(100vh - 260px);
+  } /* Further adjust if needed */
+  .header-buttons button,
+  .header-buttons a button {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+}
+
+/* Theme toggle button styles for new_post.html */
+#theme-toggle {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 1rem;
+  padding: 0.5rem 0.7rem;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-right: 10px;
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#theme-toggle:hover{
+  color: var(--primary);
+  background: rgba(181, 157, 75, 0.08);
+  box-shadow: 0 2px 8px rgba(181, 157, 75, 0.08);
+}
+.theme-icon-light, .theme-icon-dark {
+  font-size: 1.3em;
+  vertical-align: middle;
+}
+
+@media (max-width: 600px) {
+  #theme-toggle {
+    font-size: 1.1rem;
+    padding: 0.3rem 0.5rem;
+    margin-right: 5px;
+  }
+}

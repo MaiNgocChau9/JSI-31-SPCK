@@ -1,743 +1,200 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo bài viết mới - Game Mood</title>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* --- Theme Variables (from existing project) --- */
-        :root[data-theme="light"] {
-            --text: #0c0b08;
-            --background: #fcfbf8;
-            --primary: #b59c4a;
-            --secondary: #dfce96;
-            --accent: #ddc05f;
-            --card-bg: #ffffff;
-            --border-color: rgba(181, 157, 75, 0.2);
-            --navbar-shadow: rgba(0, 0, 0, 0.1);
-            --button-bg: #f0f0f0;
-            --button-border: #ccc;
-            --button-hover-bg: #e0e0e0;
-            --input-text: #333;
-            --input-bg: transparent;
-            --iframe-bg: #ffffff; /* Background for editor iframe */
-            --iframe-text: #333333; /* Text color for editor iframe */
-        }
-
-        :root[data-theme="dark"] {
-            --text: #f7f6f3;
-            --background: #070603;
-            --primary: #b59c4a;
-            --secondary: #695820;
-            --accent: #a08222;
-            --card-bg: #1a1a1a;
-            --border-color: rgba(181, 157, 75, 0.4);
-            --navbar-shadow: rgba(255, 255, 255, 0.1);
-            --button-bg: #2a2a2a;
-            --button-border: #444;
-            --button-hover-bg: #383838;
-            --input-text: #f7f6f3;
-            --input-bg: transparent;
-            --iframe-bg: #1e1e1e; /* Dark background for editor iframe */
-            --iframe-text: #f0f0f0; /* Light text color for editor iframe */
-        }
-
-        /* --- Global Styles --- */
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-        * {
-            box-sizing: border-box;
-            font-family: "Open Sans", sans-serif;
-        }
-        html {
-            scrollbar-width: thin;
-            scrollbar-color: var(--secondary) var(--background);
-        }
-        body {
-            margin: 0;
-            padding: 20px;
-            padding-top: 80px; /* Space for fixed navbar */
-            background-color: var(--background);
-            color: var(--text);
-            transition: background-color 0.3s, color 0.3s;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        body::-webkit-scrollbar { width: 8px; }
-        body::-webkit-scrollbar-track { background: var(--background); }
-        body::-webkit-scrollbar-thumb { background-color: var(--secondary); border-radius: 4px; }
-
-        /* --- Navbar Styles --- */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            padding: 0.8rem 0;
-            background-color: var(--background);
-            box-shadow: 0 2px 10px var(--navbar-shadow);
-            transition: background-color 0.3s;
-            z-index: 1000;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .container {
-            max-width: 1140px;
-            margin: 0 auto;
-            padding: 0 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .navbar-brand {
-            color: var(--primary);
-            font-weight: bold;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        .navbar-brand:hover { color: var(--accent); }
-        .brand-icon { font-size: 1.8rem; }
-
-        .navbar-right {
-            display: flex;
-            align-items: center;
-        }
-
-        .theme-toggle-wrapper {
-            margin-right: 1rem; /* Space between theme toggle and links/buttons */
-        }
-
-        .btn-theme {
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 1.2rem;
-            padding: 0.5rem;
-            cursor: pointer;
-            transition: color 0.3s;
-        }
-        .btn-theme:hover { color: var(--primary); }
-        [data-theme="light"] .theme-icon-dark,
-        [data-theme="dark"] .theme-icon-light { display: none; }
-
-        .navbar-links {
-            display: flex;
-            align-items: center;
-            gap: 1rem; /* Spacing between nav items */
-        }
-
-        .nav-item a {
-            color: var(--text);
-            text-decoration: none;
-            padding: 0.5rem 0.5rem;
-            transition: color 0.3s;
-            white-space: nowrap;
-        }
-        .nav-item a:hover, .nav-item a.active { color: var(--primary); }
-
-        /* Navbar Buttons (Login/Register/User) */
-        .btn-login, .btn-register, .userNameSection {
-            padding: 0.5rem 1rem;
-            border-radius: 0.3rem;
-            text-decoration: none;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .btn-login {
-            color: var(--primary);
-            border: 1px solid var(--accent);
-            background-color: transparent;
-        }
-        .btn-login:hover {
-            color: var(--accent);
-            background-color: rgba(181, 157, 75, 0.1);
-        }
-        .btn-register {
-            background-color: var(--primary);
-            color: var(--background);
-            border: 1px solid var(--primary);
-        }
-        .btn-register:hover {
-            background-color: var(--accent);
-            border-color: var(--accent);
-        }
-        .userNameSection {
-            color: var(--primary);
-            border: 1px solid var(--accent);
-            background-color: transparent;
-            display: none; /* Hidden by default, shown by JS if user logged in */
-        }
-        .userNameSection:hover {
-            color: red;
-            border: 1px solid orangered;
-        }
-        .login_register { /* Wrapper for login/register shown when logged out */
-           display: flex;
-           gap: 0.5rem;
-        }
-
-        /* Basic Mobile Navbar Toggle - Just show/hide for simplicity */
-        .navbar-toggler {
-            display: none; /* Hide on desktop */
-            background: none;
-            border: 1px solid var(--secondary);
-            color: var(--text);
-            padding: 0.3rem 0.6rem;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border-radius: 4px;
-            margin-left: 1rem;
-        }
-
-        @media (max-width: 991px) {
-            .navbar-links { display: none; /* Hide links by default on mobile */ }
-            .navbar-toggler { display: block; /* Show toggler on mobile */ }
-            /* Basic display logic if needed, add JS for real toggle */
-            /* .navbar-links.active { display: block; position: absolute; top: 100%; left: 0; background: var(--background); width: 100%; } */
-        }
-        /* Further mobile refinements would need JS for toggle */
-
-        /* --- Editor Styles --- */
-        .editor-header {
-            display: flex;
-            justify-content: space-between; /* Align items */
-            align-items: center;
-            margin-bottom: 20px;
-            background-color: var(--card-bg);
-            padding: 10px 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-        }
-
-        #title-input {
-            flex-grow: 1; /* Take available space */
-            border: none;
-            outline: none;
-            font-size: 1.8rem; /* Slightly smaller */
-            font-weight: bold;
-            padding: 5px 0; /* Adjust padding */
-            background-color: var(--input-bg);
-            color: var(--input-text);
-            margin-right: 20px; /* Space before buttons */
-        }
-        #title-input::placeholder {
-             color: var(--secondary);
-             opacity: 0.7;
-        }
-
-        .header-buttons {
-            display: flex;
-            align-items: center;
-            gap: 10px; /* Space between buttons */
-            flex-shrink: 0; /* Prevent buttons from shrinking */
-        }
-
-        .header-buttons button, .header-buttons a button {
-            padding: 8px 15px;
-            background-color: var(--button-bg);
-            border: 1px solid var(--button-border);
-            color: var(--text);
-            border-radius: 5px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            white-space: nowrap;
-        }
-        .header-buttons a { text-decoration: none; }
-
-        .header-buttons button:hover, .header-buttons a button:hover {
-            background-color: var(--button-hover-bg);
-        }
-
-        #add-post-btn { /* Style the post button specifically */
-             background-color: var(--primary);
-             color: var(--background);
-             border-color: var(--primary);
-        }
-        #add-post-btn:hover {
-             background-color: var(--accent);
-             border-color: var(--accent);
-        }
-
-
-        #toolbar {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            background-color: var(--card-bg);
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-        #toolbar::-webkit-scrollbar { height: 6px; }
-        #toolbar::-webkit-scrollbar-thumb { background-color: var(--secondary); border-radius: 3px; }
-
-        #toolbar button, #toolbar select {
-            margin-right: 8px;
-            padding: 6px 10px; /* Slightly smaller padding */
-            background-color: var(--button-bg);
-            border: 1px solid var(--button-border);
-            color: var(--text);
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.9rem; /* Consistent font size */
-            flex-shrink: 0;
-        }
-        #toolbar button:hover, #toolbar select:hover { background-color: var(--button-hover-bg); }
-
-        .toolbar-group { display: flex; align-items: center; }
-        .toolbar-separator {
-            height: 20px; /* Adjusted height */
-            width: 1px;
-            background-color: var(--border-color);
-            margin: 0 10px;
-            flex-shrink: 0;
-        }
-
-        #editor-container {
-            width: 100%;
-            height: calc(100vh - 260px); /* Adjust based on final header/toolbar height */
-            border: 1px solid var(--border-color);
-            padding: 0;
-            box-sizing: border-box;
-            background-color: var(--iframe-bg); /* Use theme variable */
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            overflow: hidden; /* Prevents iframe overflow issues */
-            flex-grow: 1; /* Allow container to grow */
-        }
-
-        #editor {
-            width: 100%;
-            height: 100%;
-            border: none; /* Remove iframe default border */
-        }
-
-        /* Ẩn hoàn toàn nút chèn ảnh từ máy */
-        #imageFileBtn, #imageInput { display: none !important; }
-
-        /* Responsive adjustments for editor area */
-        @media (max-width: 768px) {
-             body { padding: 10px; padding-top: 70px; }
-            .editor-header { flex-direction: column; align-items: stretch; padding: 10px; }
-            #title-input { margin-right: 0; margin-bottom: 10px; font-size: 1.5rem; }
-            .header-buttons { justify-content: flex-end; }
-             #toolbar { padding: 8px; }
-             #toolbar button, #toolbar select { padding: 5px 8px; font-size: 0.85rem; }
-            #editor-container { height: calc(100vh - 280px); } /* Recalculate height */
-        }
-         @media (max-width: 480px) {
-             #editor-container { height: calc(100vh - 260px); } /* Further adjust if needed */
-              .header-buttons button, .header-buttons a button { font-size: 0.8rem; padding: 6px 10px; }
-         }
-
-    </style>
+    <title>Đăng bài mới - Game Mood</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/new_post.css">
 </head>
 <body>
-    <!-- Recreated Navbar -->
-    <nav class="navbar">
-        <div class="container">
-            <a class="navbar-brand" href="admin.html"> <!-- Link back to admin -->
-                <i class="fas fa-gamepad brand-icon"></i>
-                Game Mood - Admin
-            </a>
-            <div class="navbar-right">
-                 <div class="theme-toggle-wrapper">
-                    <button id="theme-toggle" class="btn-theme" title="Chuyển chế độ Sáng/Tối">
-                        <i class="fas fa-sun theme-icon-light"></i>
-                        <i class="fas fa-moon theme-icon-dark"></i>
-                    </button>
-                </div>
-                 <!-- Simplified nav links for this page context -->
-                 <div class="navbar-links">
-                     <span class="nav-item"><a class="nav-link active" href="#">Tạo bài viết</a></span>
-                     <span class="nav-item"><a class="nav-link" href="blogs.html">Xem bài viết</a></span>
-                     <!-- Login/User section will be handled by JS below -->
-                     <div class="login_register">
-                         <a class="btn btn-login" href="login.html">Đăng nhập</a>
-                         <a class="btn btn-register" href="register.html">Đăng ký</a>
-                     </div>
-                     <a class="btn userNameSection" title="Đăng xuất">User</a>
-                 </div>
-                 <!-- Basic Mobile Toggler Structure (JS needed for functionality) -->
-                 <button class="navbar-toggler" type="button" aria-label="Toggle navigation">
-                     <i class="fas fa-bars"></i>
-                 </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Editor Content Area -->
     <div class="editor-header">
-        <input type="text" id="title-input" placeholder="Tiêu đề bài viết...">
+        <input type="text" id="title-input" placeholder="Tiêu đề bài viết">
+        <button id="theme-toggle" class="btn btn-theme">
+            <i class="fas fa-sun theme-icon-light"></i>
+            <i class="fas fa-moon theme-icon-dark"></i>
+        </button>
         <div class="header-buttons">
-            <button id="add-post-btn"><i class="fas fa-paper-plane"></i> Đăng bài</button>
-            <a href="admin.html"><button id="cancel-post-btn"><i class="fas fa-times"></i> Hủy bỏ</button></a>
+            <button id="add-post-btn">Đăng</button>
+            <a href="../index.html"><button id="cancel-post-btn" type="button">Hủy bỏ</button></a>
         </div>
     </div>
-
     <div id="toolbar">
         <div class="toolbar-group">
-            <select id="headingSelect" title="Chọn Tiêu đề">
-                <option value="">Đoạn văn</option>
-                <option value="h1">Tiêu đề 1</option>
-                <option value="h2">Tiêu đề 2</option>
-                <option value="h3">Tiêu đề 3</option>
-                <option value="h4">Tiêu đề 4</option>
-                <option value="h5">Tiêu đề 5</option>
-                <option value="h6">Tiêu đề 6</option>
+            <select id="headingSelect">
+                <option value="">Tiêu đề</option>
+                <option value="h1">Tiêu đề cấp 1</option>
+                <option value="h2">Tiêu đề cấp 2</option>
+                <option value="h3">Tiêu đề cấp 3</option>
+                <option value="h4">Tiêu đề cấp 4</option>
+                <option value="h5">Tiêu đề cấp 5</option>
+                <option value="h6">Tiêu đề cấp 6</option>
             </select>
         </div>
         <div class="toolbar-separator"></div>
         <div class="toolbar-group">
-            <button id="boldBtn" title="In đậm"><b>B</b></button>
-            <button id="italicBtn" title="In nghiêng"><i>I</i></button>
-            <button id="underlineBtn" title="Gạch chân"><u>U</u></button>
+            <button id="boldBtn">B</button>
+            <button id="italicBtn"><i>I</i></button>
+            <button id="underlineBtn"><u>U</u></button>
         </div>
         <div class="toolbar-separator"></div>
         <div class="toolbar-group">
-            <button id="orderedListBtn" title="Danh sách có thứ tự"><i class="fas fa-list-ol"></i></button>
-            <button id="unorderedListBtn" title="Danh sách không thứ tự"><i class="fas fa-list-ul"></i></button>
+            <button id="orderedListBtn">OL</button>
+            <button id="unorderedListBtn">UL</button>
         </div>
         <div class="toolbar-separator"></div>
         <div class="toolbar-group">
-            <button id="imageUrlBtn" title="Chèn ảnh từ URL"><i class="fas fa-link"></i></button>
+            <button id="imageFileBtn">Choose Image</button>
+            <button id="imageUrlBtn">Insert Image URL</button>
+            <input type="file" id="imageInput" accept="image/*">
         </div>
-        <div class="toolbar-separator"></div>
-         <div class="toolbar-group">
-             <button id="undoBtn" title="Hoàn tác"><i class="fas fa-undo"></i></button>
-             <button id="redoBtn" title="Làm lại"><i class="fas fa-redo"></i></button>
-         </div>
-         <div class="toolbar-separator"></div>
-          <div class="toolbar-group">
-              <button id="createLinkBtn" title="Tạo liên kết"><i class="fas fa-link"></i></button>
-              <button id="unlinkBtn" title="Xóa liên kết"><i class="fas fa-unlink"></i></button>
-          </div>
     </div>
-
     <div id="editor-container">
         <iframe id="editor"></iframe>
     </div>
-
+    <script src="../js/switch_theme.js"></script>
     <script>
-        // --- Theme Switching Logic ---
-        const themeToggle = document.getElementById('theme-toggle');
-        const htmlElement = document.documentElement;
-        const lightIcon = document.querySelector('.theme-icon-light');
-        const darkIcon = document.querySelector('.theme-icon-dark');
-        let currentEditorTheme = localStorage.getItem('theme') || 'light'; // Track editor theme
+        // Lấy đối tượng iframe có id 'editor' và lấy nội dung bên trong (window của iframe)
+        const editor = document.getElementById('editor').contentWindow;
 
-        function updateThemeIcon(theme) {
-            if (lightIcon && darkIcon) {
-                lightIcon.style.display = theme === 'dark' ? 'none' : 'inline';
-                darkIcon.style.display = theme === 'dark' ? 'inline' : 'none';
-            }
-        }
+        // Định nghĩa các lệnh chỉnh sửa sẽ được thực thi khi nhấn các nút toolbar
+        const commands = {
+            'boldBtn': 'bold',               // Nhấn nút 'boldBtn' để làm đậm văn bản
+            'italicBtn': 'italic',           // Nhấn nút 'italicBtn' để làm nghiêng văn bản
+            'underlineBtn': 'underline',     // Nhấn nút 'underlineBtn' để gạch dưới văn bản
+            'orderedListBtn': 'insertOrderedList', // Nhấn nút 'orderedListBtn' để tạo danh sách có thứ tự
+            'unorderedListBtn': 'insertUnorderedList', // Nhấn nút 'unorderedListBtn' để tạo danh sách không có thứ tự
+        };
 
-        function applyTheme(theme, editorWindow) {
-            htmlElement.setAttribute('data-theme', theme);
-            localStorage.setItem('theme', theme);
-            currentEditorTheme = theme; // Update editor theme tracker
-            updateThemeIcon(theme);
+        // Kích hoạt chế độ soạn thảo cho iframe (chế độ chỉnh sửa nội dung)
+        editor.document.designMode = 'on';
 
-            // Update iframe style based on theme
-            if (editorWindow && editorWindow.document && editorWindow.document.body) {
-                 const iframeBg = getComputedStyle(document.documentElement).getPropertyValue('--iframe-bg').trim();
-                 const iframeText = getComputedStyle(document.documentElement).getPropertyValue('--iframe-text').trim();
-                 editorWindow.document.body.style.backgroundColor = iframeBg;
-                 editorWindow.document.body.style.color = iframeText;
-                 // Re-apply other styles if needed
-                 editorWindow.document.body.style.fontFamily = '"Open Sans", sans-serif';
-                 editorWindow.document.body.style.fontSize = '16px';
-                 editorWindow.document.body.style.lineHeight = '1.6';
-                 editorWindow.document.body.style.padding = '20px';
-                 editorWindow.document.body.style.maxWidth = '800px';
-                 editorWindow.document.body.style.margin = '0 auto';
-            }
-        }
+        // Áp dụng CSS cho nội dung trong iframe
+        editor.document.body.style.cssText = `
+            @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+            font-family: "Open Sans", sans-serif;  
+            font-size: 16px; line-height: 1.5;  
+            padding: 20px;                     
+            max-width: 800px;                 
+            color: #333;                     
+            margin: 0 auto;                   
+        `;
 
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        applyTheme(savedTheme, null); // Apply initial theme without editor yet
+        // Tạo thẻ <style> và thêm các quy tắc CSS bổ sung vào phần head của iframe
+        const style = document.createElement('style');
+        style.textContent = `
+            img { max-width: 100%; height: auto; border-radius: 8px; margin: 10px auto; }  // Hình ảnh sẽ co giãn phù hợp với kích thước và có viền bo tròn
+            body::-webkit-scrollbar { width: 10px; }                                      // Tùy chỉnh thanh cuộn trong iframe
+            body::-webkit-scrollbar-track { background: #f1f1f1; }
+            body::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
+            body::-webkit-scrollbar-thumb:hover { background: #555; }
+            html { scrollbar-width: thin; scrollbar-color: #888 #f1f1f1; }
+        `;
+        // Thêm thẻ <style> vào head của iframe
+        editor.document.head.appendChild(style);
 
-        if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                const newTheme = htmlElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-                applyTheme(newTheme, document.getElementById('editor').contentWindow);
-            });
-        }
-
-        // --- Navbar User/Login Logic ---
-         const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-         const userNameSection = document.querySelector(".userNameSection");
-         const login_register = document.querySelector(".login_register");
-
-         if (currentUser) {
-             userNameSection.textContent = `✦ ${currentUser.name} ✦`;
-             userNameSection.style.display = 'inline-block'; // Show user button
-             login_register.style.display = 'none';        // Hide login/register
-
-             userNameSection.addEventListener("click", () => {
-                 if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
-                     localStorage.removeItem("currentUser");
-                     window.location.href = "login.html"; // Redirect to login after logout
-                 }
-             });
-              userNameSection.addEventListener('mouseover', () => { userNameSection.textContent = 'Đăng xuất'; });
-              userNameSection.addEventListener('mouseout', () => { userNameSection.textContent = `✦ ${currentUser.name} ✦`; });
-
-         } else {
-             userNameSection.style.display = 'none';        // Hide user button
-             login_register.style.display = 'flex';        // Show login/register
-         }
-
-        // --- Editor Logic ---
-        const iframe = document.getElementById('editor');
-        let editor; // Will hold the iframe's window object
-
-        iframe.addEventListener('load', () => {
-            editor = iframe.contentWindow;
-
-            // Enable design mode *after* the iframe is fully loaded
-            try {
-                 editor.document.designMode = 'on';
-            } catch (e) {
-                 console.error("Could not set designMode. Check iframe security policies if loading cross-origin content.", e);
-                 return; // Stop if designMode fails
-            }
-
-
-            // Apply initial theme styles to the loaded iframe
-             applyTheme(currentEditorTheme, editor); // Apply current theme to iframe
-
-
-            // Commands mapping
-            const commands = {
-                'boldBtn': 'bold',
-                'italicBtn': 'italic',
-                'underlineBtn': 'underline',
-                'orderedListBtn': 'insertOrderedList',
-                'unorderedListBtn': 'insertUnorderedList',
-                'undoBtn': 'undo',
-                'redoBtn': 'redo',
-                'unlinkBtn': 'unlink',
-            };
-
-            Object.keys(commands).forEach(id => {
-                const button = document.getElementById(id);
-                if (button) {
-                    button.addEventListener('click', () => execCommand(commands[id]));
-                }
-            });
-
-            // Heading select
-            const headingSelect = document.getElementById('headingSelect');
-            if (headingSelect) {
-                headingSelect.addEventListener('change', (e) => {
-                    const value = e.target.value;
-                    if (value) {
-                         // Special handling for paragraphs if "Đoạn văn" is selected
-                         if (value === "p") {
-                              execCommand('formatBlock', '<p>');
-                         } else {
-                             execCommand('formatBlock', `<${value}>`);
-                         }
-                    } else {
-                         // Attempt to revert to paragraph if the default "Đoạn văn" is re-selected
-                         execCommand('formatBlock', '<p>');
-                    }
-                    // No need to reset e.target.value, let it reflect the choice
-                });
-            }
-
-            // Image insertion from URL (chỉ cho phép chèn ảnh từ link)
-            const imageUrlBtn = document.getElementById('imageUrlBtn');
-            if (imageUrlBtn) {
-                imageUrlBtn.addEventListener('click', () => {
-                    const url = prompt('Nhập link ảnh (URL):');
-                    if (url) {
-                        try {
-                            new URL(url);
-                            execCommand('insertHTML', `<img src="${url}" style="max-width: 100%; height: auto; display: block; margin: 10px auto; border-radius: 5px;">`);
-                        } catch (_) {
-                            alert("Link ảnh không hợp lệ.");
-                        }
-                    }
-                });
-            }
-
-            // Link insertion/removal
-            const createLinkBtn = document.getElementById('createLinkBtn');
-            const unlinkBtn = document.getElementById('unlinkBtn'); // Assuming you have an unlinkBtn
-            if (createLinkBtn) {
-                 createLinkBtn.addEventListener('click', () => {
-                      const url = prompt('Enter the URL:');
-                      if (url) {
-                           execCommand('createLink', url);
-                      }
-                 });
-            }
-            // 'unlinkBtn' command is handled by the generic commands loop
-
-            // Paste handling
-            editor.document.addEventListener('paste', function(e) {
-                e.preventDefault();
-                const clipboardData = e.clipboardData || window.clipboardData;
-                if (!clipboardData) return;
-
-                const items = clipboardData.items;
-                let foundItem = false;
-
-                for (let i = 0; i < items.length; i++) {
-                    const item = items[i];
-                    if (item.type.includes("image")) {
-                        const blob = item.getAsFile();
-                        if (blob) {
-                             const reader = new FileReader();
-                             reader.onload = (event) => execCommand('insertHTML', `<img src="${event.target.result}" style="max-width: 100%; height: auto; display: block; margin: 10px auto; border-radius: 5px;">`);
-                             reader.readAsDataURL(blob);
-                             foundItem = true;
-                             break; // Handle first image found
-                        }
-                    }
-                }
-
-                 // If no image was pasted, handle plain text
-                 if (!foundItem && clipboardData.getData) {
-                      const text = clipboardData.getData('text/plain');
-                      if (text) {
-                           execCommand('insertText', text);
-                           foundItem = true;
-                      }
-                 }
-
-                // Fallback if nothing specific was handled (might paste weird stuff)
-                if (!foundItem && clipboardData.getData) {
-                     const html = clipboardData.getData('text/html');
-                      if (html) {
-                           // Basic sanitization (very simple, consider a library for robust sanitization)
-                           const cleanHtml = html.replace(/<script.*?>.*?<\/script>/gi, '') // Remove script tags
-                                                 .replace(/<style.*?>.*?<\/style>/gi, '');   // Remove style tags
-                           execCommand('insertHTML', cleanHtml);
-                      } else {
-                            const text = clipboardData.getData('text/plain');
-                            if (text) execCommand('insertText', text);
-                      }
-                }
-            });
-
-            // Initial focus
-            editor.focus();
+        // Gán sự kiện click cho các nút lệnh trong đối tượng commands (bôi đậm, nghiêng, gạch dưới...)
+        Object.keys(commands).forEach(id => {
+            document.getElementById(id).addEventListener('click', () => execCommand(commands[id]));
         });
 
-         // Set src to empty to trigger load event properly, especially in Firefox
-         iframe.src = 'about:blank';
-
-
-        // Function to execute commands
+        // Hàm thực thi lệnh chỉnh sửa văn bản trong iframe
         function execCommand(command, value = null) {
-            if (!editor || !editor.document) {
-                 console.error("Editor not ready.");
-                 return;
-            }
-            editor.focus();
-            try {
-                 // Special case for formatBlock to handle paragraph creation/reversion better
-                 if (command === 'formatBlock' && value && value.toLowerCase() === '<p>') {
-                      // Try to remove existing block format first if a block is selected
-                      const selection = editor.getSelection();
-                      if (selection && !selection.isCollapsed) {
-                           const range = selection.getRangeAt(0);
-                           let container = range.commonAncestorContainer;
-                           // Traverse up to find the block element
-                           while (container && container.nodeType !== Node.ELEMENT_NODE) {
-                                container = container.parentNode;
-                           }
-                           if (container && ['H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE', 'PRE'].includes(container.tagName)) {
-                                // More robust would be to re-wrap content in <p>, but execCommand can be tricky.
-                                // For simplicity, just apply <p> format. It might nest, which isn't ideal.
-                                editor.document.execCommand('formatBlock', false, 'p');
-                                return; // Exit after attempting paragraph format
-                           }
-                      }
-                 }
-                 editor.document.execCommand(command, false, value);
-            } catch(e) {
-                 console.error(`Error executing command '${command}':`, e);
-            }
-            editor.focus(); // Refocus after command
+            editor.focus();                               // Đặt tiêu điểm vào iframe trước khi thực thi lệnh
+            editor.document.execCommand(command, false, value); // Thực thi lệnh chỉnh sửa (vd: bold, italic...)
         }
 
+        // Gán sự kiện thay đổi cho dropdown "headingSelect" để thay đổi tiêu đề (H1, H2...)
+        document.getElementById('headingSelect').addEventListener('change', (e) => {
+            if (e.target.value) execCommand('formatBlock', `<${e.target.value}>`); // Chọn tiêu đề (h1-h6)
+            e.target.value = '';  // Reset lại dropdown sau khi thực hiện lệnh
+        });
 
-        // --- Save Post Logic ---
-        const addPostBtn = document.getElementById('add-post-btn');
-        if (addPostBtn) {
-            addPostBtn.addEventListener('click', function() {
-                if (!editor || !editor.document || !editor.document.body) {
-                     alert("Editor is not ready. Please wait a moment and try again.");
-                     return;
-                }
+        // Sự kiện khi nhấn nút "Choose Image" để chọn ảnh từ máy
+        document.getElementById('imageFileBtn').addEventListener('click', () => imageInput.click());
+        document.getElementById('imageInput').addEventListener('change', (e) => {
+            const file = e.target.files[0];   // Lấy file ảnh từ input
+            if (file) {
+                const reader = new FileReader();  // Đọc file bằng FileReader
+                reader.onload = (e) => execCommand('insertHTML', `<img src="${e.target.result}" style="max-width: 100%; height: auto;">`);
+                reader.readAsDataURL(file);  // Chuyển đổi file thành chuỗi base64
+            }
+        });
 
-                const titleInput = document.getElementById('title-input');
-                const title = titleInput ? titleInput.value.trim() : "";
-                const content = editor.document.body.innerHTML.trim();
+        // Sự kiện khi nhấn "Insert Image URL" để thêm ảnh từ URL
+        document.getElementById('imageUrlBtn').addEventListener('click', () => {
+            const url = prompt('Enter image URL:');   // Hiện cửa sổ nhập URL
+            if (url) execCommand('insertHTML', `<img src="${url}" style="max-width: 100%; height: auto;">`);  // Thêm ảnh vào iframe
+        });
 
-                if (title === "" || content === "" || content === "<p><br></p>" || content === "<br>") { // Check for empty or placeholder content
-                    alert("Vui lòng điền tiêu đề và nội dung bài viết.");
-                    return;
-                }
-
-                 // Basic content validation (optional: check for minimum length)
-                 if (content.length < 20) { // Example minimum length
-                      if (!confirm("Nội dung bài viết có vẻ hơi ngắn. Bạn có chắc muốn đăng?")) {
-                           return;
-                      }
-                 }
-
-
-                // Create post object
-                const newPost = {
-                    id: 'post_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7), // Simple unique ID
-                    title: title,
-                    content: content,
-                    createdAt: new Date().toISOString(), // Add creation timestamp
-                    author: currentUser ? currentUser.name : "Ẩn danh" // Store author name if logged in
-                    // Add other fields like 'excerpt', 'tags', 'thumbnail' if needed later
-                };
-
-                // --- Saving to localStorage ---
-                try {
-                    let posts = JSON.parse(localStorage.getItem('posts')) || [];
-                     // Optional: Limit the number of stored posts if needed
-                     // const MAX_POSTS = 50;
-                     // if (posts.length >= MAX_POSTS) {
-                     //      posts.shift(); // Remove the oldest post
-                     // }
-                    posts.push(newPost);
-                    localStorage.setItem('posts', JSON.stringify(posts));
-
-                    alert("Bài viết đã được đăng thành công!");
-                    // Redirect to blogs list or admin page after posting
-                    window.location.href = 'blogs.html';
-
-                } catch (e) {
-                     console.error("Error saving post to localStorage:", e);
-                     alert("Đã xảy ra lỗi khi lưu bài viết. Vui lòng kiểm tra dung lượng localStorage và thử lại.");
+        // Sự kiện dán hình ảnh hoặc văn bản từ clipboard vào iframe
+        editor.document.addEventListener('paste', function(e) {
+            e.preventDefault();  // Ngăn hành động dán mặc định
+            const items = (e.clipboardData || e.originalEvent.clipboardData).items;  // Lấy các items từ clipboard
+            [...items].forEach(item => {
+                if (item.type.includes("image")) {    // Kiểm tra nếu là hình ảnh
+                    const blob = item.getAsFile();    // Lấy file ảnh
+                    const reader = new FileReader();  // Đọc file bằng FileReader
+                    reader.onload = (event) => execCommand('insertHTML', `<img src="${event.target.result}" style="max-width: 100%; height: auto;">`);
+                    reader.readAsDataURL(blob);       // Chuyển file thành base64
+                } else if (item.type === "text/plain") {  // Nếu là văn bản
+                    item.getAsString(text => execCommand('insertText', text));  // Dán văn bản vào iframe
                 }
             });
+        });
+
+        // Đặt tiêu điểm vào iframe khi trang được tải
+        window.addEventListener('load', () => editor.focus());
+
+        // Sự kiện khi nhấn nút "Đăng" để đăng bài viết
+        document.getElementById('add-post-btn').addEventListener('click', function() {
+            const title = document.getElementById('title-input').value;  // Lấy tiêu đề từ input
+            const content = editor.document.body.innerHTML;  // Lấy nội dung bài viết từ iframe
+
+            // Kiểm tra nếu tiêu đề hoặc nội dung trống thì hiển thị cảnh báo
+            if (title.trim() === "" || content.trim() === "") {
+                alert("Vui lòng điền tiêu đề và nội dung bài viết.");
+                return;
+            }
+
+            // Tạo đối tượng bài viết
+            const post = {
+                title: title,       // Tiêu đề bài viết
+                content: content    // Nội dung bài viết
+            };
+
+            // Lấy danh sách bài viết từ localStorage hoặc tạo danh sách mới nếu chưa có
+            let posts = JSON.parse(localStorage.getItem('posts')) || [];
+
+            // Thêm bài viết mới vào danh sách
+            posts.push(post);
+
+            // Lưu danh sách bài viết vào localStorage
+            localStorage.setItem('posts', JSON.stringify(posts));
+
+            // Hiển thị thông báo bài viết đã được đăng và chuyển hướng trang
+            alert("Bài viết đã được đăng thành công!");
+            window.location.href = '../index.html';  // Chuyển hướng sang trang admin sau khi đăng bài
+        });
+
+        // Hàm lấy giá trị biến CSS từ :root
+        function getCssVar(varName) {
+            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
         }
 
+        // Hàm cập nhật màu nền và màu chữ cho iframe editor
+        function updateEditorTheme() {
+            const bg = getCssVar('--iframe-bg');
+            const color = getCssVar('--iframe-text');
+            editor.document.body.style.backgroundColor = bg;
+            editor.document.body.style.color = color;
+        }
+
+        // Gọi khi load trang và khi đổi theme
+        window.addEventListener('load', updateEditorTheme);
+        // Lắng nghe sự kiện theme thay đổi
+        const observer = new MutationObserver(updateEditorTheme);
+        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     </script>
-    <script src="../js/updateUserElement.js"></script>
 </body>
 </html>
