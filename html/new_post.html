@@ -53,7 +53,8 @@
         <iframe id="editor"></iframe>
     </div>
     <script src="../js/switch_theme.js"></script>
-    <script>
+    <script type="module">
+        import { Blog, addBlog } from "../components/blogs.js";
         // Lấy đối tượng iframe có id 'editor' và lấy nội dung bên trong (window của iframe)
         const editor = document.getElementById('editor').contentWindow;
 
@@ -147,7 +148,7 @@
         window.addEventListener('load', () => editor.focus());
 
         // Sự kiện khi nhấn nút "Đăng" để đăng bài viết
-        document.getElementById('add-post-btn').addEventListener('click', function() {
+        document.getElementById('add-post-btn').addEventListener('click', async function() {
             const title = document.getElementById('title-input').value;  // Lấy tiêu đề từ input
             const content = editor.document.body.innerHTML;  // Lấy nội dung bài viết từ iframe
 
@@ -157,24 +158,28 @@
                 return;
             }
 
-            // Tạo đối tượng bài viết
-            const post = {
-                title: title,       // Tiêu đề bài viết
-                content: content    // Nội dung bài viết
-            };
+            // Lấy email người dùng hiện tại từ localStorage (chỉ lấy dạng object)
+            let email = "unknown";
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"))[0];
+            console.log(currentUser);
+            if (currentUser && currentUser.email) {
+                email = currentUser.email;
+            }
+            // Tạo đối tượng bài viết sử dụng factory Blog
+            const post = Blog({
+                title: title,
+                content: content,
+                postedBy: email, // Lưu email người đăng
+                description: content.replace(/<[^>]+>/g, '').slice(0, 150) // Tóm tắt ngắn
+            });
 
-            // Lấy danh sách bài viết từ localStorage hoặc tạo danh sách mới nếu chưa có
-            let posts = JSON.parse(localStorage.getItem('posts')) || [];
-
-            // Thêm bài viết mới vào danh sách
-            posts.push(post);
-
-            // Lưu danh sách bài viết vào localStorage
-            localStorage.setItem('posts', JSON.stringify(posts));
-
-            // Hiển thị thông báo bài viết đã được đăng và chuyển hướng trang
-            alert("Bài viết đã được đăng thành công!");
-            window.location.href = '../index.html';  // Chuyển hướng sang trang admin sau khi đăng bài
+            try {
+                await addBlog(post);
+                alert("Bài viết đã được đăng thành công!");
+                window.location.href = './blogs.html'; 
+            } catch (error) {
+                alert("Đăng bài thất bại: " + error.message);
+            }
         });
 
         // Hàm lấy giá trị biến CSS từ :root

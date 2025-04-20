@@ -1,84 +1,47 @@
 import { firestore } from "../js/firebase.js";
 import {
   collection,
-  getDocs,
   doc,
   setDoc,
-  getDoc,
+  getDocs,
   query,
+  where,
   serverTimestamp,
-  deleteDoc,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js";
 
-function Blogs(
-  id,
-  comments = [],
-  createdAt,
-  createdBy,
-  description,
-  postedAt,
-  postedBy,
-  thumbnail,
-  title,
-  content
-) {
-  this.comments = comments;
-  this.createdAt = createdAt;
-  this.createdBy = createdBy;
-  this.description = description;
-  this.postedAt = postedAt;
-  this.postedBy = postedBy;
-  this.thumbnail = thumbnail;
-  this.title = title;
-  this.content = content;
-
-  function addComment(comment, createdAt, createdBy) {
-    this.comments.push({
-      comment: comment,
-      createdAt: new Date(),
-      createdBy: this.postedBy,
-    });
-    updateBlog();
-  }
-  function updateBlog() {
-    const blogsRef = collection(firestore, "blogs");
-    setDoc(doc(blogsRef), {
-      comments: this.comments,
-      createdAt: this.createdAt,
-      createdBy: this.createdBy,
-      description: this.description,
-      postedAt: this.postedAt,
-      postedBy: this.postedBy,
-      thumbnail: this.thumbnail,
-      title: this.title,
-      content: this.content,
-    });
-  }
-
-  async function deleteBlog() {
-    const docRef = doc(firestore, "blogs", id);
-    await deleteDoc(docRef);
-  }
-
-  async function getBlogList() {
-    const q = await query(collection(firestore, "blogs"));
-
-    const querySnapshot = await getDocs(q);
-    querySnapshot.forEach((doc) => {
-      // doc.data() is never undefined for query doc snapshots
-      // list.push(doc);
-    });
-  }
-
+// Hàm tạo object blog
+export function Blog({
+  title = "",
+  content = "",
+  description = "",
+  postedBy = "",
+  postedAt = null,
+  thumbnail = "https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  comments = []
+} = {}) {
   return {
-    comments: this.comments,
-    createdAt: this.createdAt,
-    createdBy: this.createdBy,
-    description: this.description,
-    postedAt: this.postedAt,
-    postedBy: this.postedBy,
-    thumbnail: this.thumbnail,
-    title: this.title,
-    content: this.content,
+    title,
+    content,
+    description,
+    postedBy,
+    postedAt: postedAt || new Date().toISOString(),
+    thumbnail,
+    comments,
   };
+}
+
+// Hàm lưu blog lên Firestore
+export async function addBlog(blogObj) {
+  const blogsRef = doc(collection(firestore, "blogs"));
+  await setDoc(blogsRef, {
+    ...blogObj,
+    postedAt: serverTimestamp(),
+  });
+}
+
+// Hàm lấy tất cả blogs
+export async function getAllBlogs() {
+  const blogsRef = collection(firestore, "blogs");
+  const querySnapshot = await getDocs(blogsRef);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
