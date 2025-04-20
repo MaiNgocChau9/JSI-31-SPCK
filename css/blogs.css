@@ -421,6 +421,8 @@ main {
 .post-body img {
   max-width: 100%;
   height: auto;
+  border-radius: 10px;
+  margin: 1rem 0;
 }
 
 .post-tags {

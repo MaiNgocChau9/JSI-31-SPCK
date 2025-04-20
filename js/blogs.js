@@ -7,19 +7,20 @@ window.addEventListener("DOMContentLoaded", async () => {
   row.innerHTML = "<div class='text-center'>Đang tải bài viết...</div>";
   try {
     const blogs = await getAllBlogs();
-    // Lấy tên người dùng cho từng bài viết
+    // Lấy tên và avatar người dùng cho từng bài viết
     const userCache = {};
-    async function getUserName(email) {
-      if (!email) return 'Ẩn danh';
+    async function getUserInfo(email) {
+      if (!email) return { name: 'Ẩn danh', avatar: 'https://ui-avatars.com/api/?name=User' };
       if (userCache[email]) return userCache[email];
       const user = await getUser(email);
       const name = user?.username || user?.name || email;
-      userCache[email] = name;
-      return name;
+      const avatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`;
+      userCache[email] = { name, avatar };
+      return { name, avatar };
     }
-    // Duyệt qua từng blog và lấy tên
+    // Duyệt qua từng blog và lấy info
     const blogCards = await Promise.all(blogs.map(async (blog, idx) => {
-      const name = await getUserName(blog.postedBy);
+      const { name, avatar } = await getUserInfo(blog.postedBy);
       return `
       <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="${100 + idx*100}">
         <div class="blog-card">
@@ -28,8 +29,8 @@ window.addEventListener("DOMContentLoaded", async () => {
           </div>
           <div class="blog-card-body">
             <h3 class="blog-title">${blog.title}</h3>
-            <p class="blog-meta">
-              <i class="fas fa-user"></i> ${name} <span class="mx-2">|</span> <i class="fas fa-calendar-alt"></i> ${blog.postedAt ? (new Date(blog.postedAt.seconds ? blog.postedAt.seconds*1000 : blog.postedAt)).toLocaleDateString('vi-VN') : ''}
+            <p class="blog-meta d-flex align-items-center">
+              <img src="${avatar}" alt="avatar" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;"> ${name} <span class="mx-2">|</span> <i class="fas fa-calendar-alt" style="font-size:1.15em;"></i> ${blog.postedAt ? (new Date(blog.postedAt.seconds ? blog.postedAt.seconds*1000 : blog.postedAt)).toLocaleDateString('vi-VN') : ''}
             </p>
             <p class="description">${blog.description || ''}</p>
             <a href="./view-blog.html?id=${blog.id}" class="btn read-more-btn">Đọc thêm <i class="fas fa-arrow-right"></i></a>
