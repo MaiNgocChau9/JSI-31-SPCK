@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="light"> <!-- Set default theme -->
+<html lang="vi" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -324,7 +324,8 @@
             border: none; /* Remove iframe default border */
         }
 
-        #imageInput { display: none; } /* Hide file input */
+        /* Ẩn hoàn toàn nút chèn ảnh từ máy */
+        #imageFileBtn, #imageInput { display: none !important; }
 
         /* Responsive adjustments for editor area */
         @media (max-width: 768px) {
@@ -411,9 +412,7 @@
         </div>
         <div class="toolbar-separator"></div>
         <div class="toolbar-group">
-            <button id="imageFileBtn" title="Chèn ảnh từ máy"><i class="fas fa-image"></i></button>
             <button id="imageUrlBtn" title="Chèn ảnh từ URL"><i class="fas fa-link"></i></button>
-            <input type="file" id="imageInput" accept="image/*">
         </div>
         <div class="toolbar-separator"></div>
          <div class="toolbar-group">
@@ -561,53 +560,34 @@
                 });
             }
 
-             // Image insertion from file
-            const imageFileBtn = document.getElementById('imageFileBtn');
-            const imageInput = document.getElementById('imageInput');
-            if (imageFileBtn && imageInput) {
-                 imageFileBtn.addEventListener('click', () => imageInput.click());
-                 imageInput.addEventListener('change', (e) => {
-                     const file = e.target.files[0];
-                     if (file && file.type.startsWith('image/')) {
-                         const reader = new FileReader();
-                         reader.onload = (e) => execCommand('insertHTML', `<img src="${e.target.result}" style="max-width: 100%; height: auto; display: block; margin: 10px auto; border-radius: 5px;">`);
-                         reader.readAsDataURL(file);
-                     } else if (file) {
-                          alert("Please select a valid image file.");
-                     }
-                      e.target.value = null; // Reset input value
-                 });
+            // Image insertion from URL (chỉ cho phép chèn ảnh từ link)
+            const imageUrlBtn = document.getElementById('imageUrlBtn');
+            if (imageUrlBtn) {
+                imageUrlBtn.addEventListener('click', () => {
+                    const url = prompt('Nhập link ảnh (URL):');
+                    if (url) {
+                        try {
+                            new URL(url);
+                            execCommand('insertHTML', `<img src="${url}" style="max-width: 100%; height: auto; display: block; margin: 10px auto; border-radius: 5px;">`);
+                        } catch (_) {
+                            alert("Link ảnh không hợp lệ.");
+                        }
+                    }
+                });
             }
 
-            // Image insertion from URL
-             const imageUrlBtn = document.getElementById('imageUrlBtn');
-             if (imageUrlBtn) {
-                 imageUrlBtn.addEventListener('click', () => {
-                     const url = prompt('Enter image URL:');
-                     if (url) {
-                          // Basic URL validation (optional but recommended)
-                          try {
-                               new URL(url); // Check if it's a valid URL structure
-                               execCommand('insertHTML', `<img src="${url}" style="max-width: 100%; height: auto; display: block; margin: 10px auto; border-radius: 5px;">`);
-                          } catch (_) {
-                               alert("Invalid URL entered.");
-                          }
-                     }
+            // Link insertion/removal
+            const createLinkBtn = document.getElementById('createLinkBtn');
+            const unlinkBtn = document.getElementById('unlinkBtn'); // Assuming you have an unlinkBtn
+            if (createLinkBtn) {
+                 createLinkBtn.addEventListener('click', () => {
+                      const url = prompt('Enter the URL:');
+                      if (url) {
+                           execCommand('createLink', url);
+                      }
                  });
-             }
-
-             // Link insertion/removal
-             const createLinkBtn = document.getElementById('createLinkBtn');
-             const unlinkBtn = document.getElementById('unlinkBtn'); // Assuming you have an unlinkBtn
-             if (createLinkBtn) {
-                  createLinkBtn.addEventListener('click', () => {
-                       const url = prompt('Enter the URL:');
-                       if (url) {
-                            execCommand('createLink', url);
-                       }
-                  });
-             }
-             // 'unlinkBtn' command is handled by the generic commands loop
+            }
+            // 'unlinkBtn' command is handled by the generic commands loop
 
             // Paste handling
             editor.document.addEventListener('paste', function(e) {

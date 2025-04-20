@@ -1,50 +1,59 @@
-document.addEventListener('DOMContentLoaded', () => {
-    displaySearchHistory();
-    setupRerunButtons();
-});
+import { getHistoriesByUser } from "../components/history.js";
 
-function displaySearchHistory() {
-    const historyList = document.querySelector('.history-list');
-    const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+function getCurrentEmail() {
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  return (user?.email || user?.[0]?.email) ?? "unknown";
+}
 
-    if (history.length === 0) {
-        historyList.innerHTML = `
-            <div class="no-history text-center" data-aos="fade-up">
-                <i class="fas fa-history"></i>
-                <p>Chưa có lịch sử tìm kiếm nào.</p>
-            </div>
-        `;
-        return;
-    }
+function formatTimestamp(createdAt) {
+  if (!createdAt) return "";
+  if (typeof createdAt.toDate === 'function') {
+    return createdAt.toDate().toLocaleString("vi-VN");
+  }
+  return new Date(createdAt).toLocaleString("vi-VN");
+}
 
-    historyList.innerHTML = history.map((item) => `
-        <div class="history-item" data-aos="fade-up" data-aos-delay="100">
-            <div class="history-item-content">
-                <i class="fas fa-search history-icon"></i>
-                <div class="history-details">
-                    <p class="history-query">${item.title}</p>
-                    <span class="history-timestamp">Vào ${item.createdAt}</span>
-                </div>
-            </div>
-            <button class="btn rerun-btn" data-query="${item.name}">
-                Mở
-            </button>
+async function displaySearchHistory() {
+  const historyList = document.querySelector('.history-list');
+  const email = getCurrentEmail();
+  console.log("[HISTORY] Đang lấy lịch sử cho email:", email);
+  const history = await getHistoriesByUser(email);
+  console.log("[HISTORY] Kết quả trả về từ Firebase:", history);
+  if (!history?.length) {
+    historyList.innerHTML = `
+      <div class="no-history text-center" data-aos="fade-up">
+        <i class="fas fa-history"></i>
+        <p>Chưa có lịch sử tìm kiếm nào.</p>
+      </div>`;
+    return;
+  }
+  historyList.innerHTML = history.map((item, index) => `
+    <div class="history-item" data-aos="fade-up" data-aos-delay="${100 + index*50}">
+      <div class="history-item-content">
+        <i class="fas fa-search history-icon"></i>
+        <div class="history-details">
+          <p class="history-query">${item.title}</p>
+          <span class="history-timestamp">Vào ${formatTimestamp(item.createdAt)}</span>
         </div>
-    `).join('');
+      </div>
+      <button class="btn rerun-btn" data-title="${item.title}">Mở</button>
+    </div>
+  `).join('');
 }
 
-function setupRerunButtons() {
-    document.querySelectorAll('.rerun-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-            const button = e.target;
-            // console.log(button);
-            const historyItem = button.closest('.history-item');
-            // console.log(historyItem);
-            const index = Array.from(historyItem.parentNode.children).indexOf(historyItem);
-            // console.log(history[index]);
-            localStorage.setItem("showHistory", JSON.stringify(history[index]));
-            window.location.href = "./show_history.html";
-        });
-    });
-}
+document.addEventListener("DOMContentLoaded", () => {
+  displaySearchHistory();
+  // Bắt sự kiện click qua delegation
+  const historyList = document.querySelector('.history-list');
+  historyList.addEventListener('click', async e => {
+    if (!e.target.classList.contains('rerun-btn')) return;
+    const title = e.target.dataset.title;
+    const email = getCurrentEmail();
+    const history = await getHistoriesByUser(email);
+    const item = history.find(h => h.title === title);
+    if (item) {
+      localStorage.setItem("showHistory", JSON.stringify(item));
+      window.location.href = "./show_history.html";
+    }
+  });
+});

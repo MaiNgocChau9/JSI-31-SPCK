@@ -74,9 +74,18 @@
 
       function updateUI(data) {
         const gamePreviewImage = document.querySelector(".game-preview img");
+        // Sửa logic lấy ảnh: ưu tiên imageUrl, fallback sang image nếu là URL, nếu không thì giữ nguyên ảnh mặc định
         if (gamePreviewImage) {
-          gamePreviewImage.src = data.image;
-          gamePreviewImage.alt = data.title;
+          if (data.imageUrl) {
+            gamePreviewImage.src = data.imageUrl;
+            gamePreviewImage.alt = data.title;
+          } else if (data.image && (data.image.startsWith('http://') || data.image.startsWith('https://'))) {
+            gamePreviewImage.src = data.image;
+            gamePreviewImage.alt = data.title;
+          } else {
+            // fallback giữ nguyên ảnh mặc định
+            gamePreviewImage.alt = data.title;
+          }
         }
 
         const cardTitle = document.querySelector(".card-title");
@@ -154,6 +163,5 @@
 
       updateUI(showHistory);
     </script>
-    <script src="../js/updateUserElement.js"></script>
   </body>
 </html>

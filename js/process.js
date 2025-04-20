@@ -1,4 +1,6 @@
 import { GoogleGenerativeAI } from "https://cdn.jsdelivr.net/npm/@google/generative-ai@0.24.0/+esm";
+import { History, addHistory } from "../components/history.js";
+import { auth } from "../js/firebase.js";
 
 
 const apiKey = "AIzaSyA6nRUwDozn7hYsRbqGXAtWwm1QU09Umwk";
@@ -81,6 +83,7 @@ Tạo ra một đoạn văn bản JSON chứa thông tin về một tựa game t
 Lưu ý:
 * Hãy chọn một game phổ biến và cung cấp thông tin chính xác và đầy đủ nhất có thể.
 * Nếu không tìm ra icon phù hợp, hãy để icon là: \`fa-solid fa-gamepad\`.
+* Chỉ đưa ra đoạn code JSON, không nói thêm bất kì điều gì khác!
 
 Ví dụ về JSON mong muốn:
 {
@@ -113,7 +116,7 @@ Ví dụ về JSON mong muốn:
 `;
 
   const model = genAI.getGenerativeModel({
-    model: "gemini-1.5-flash",
+    model: "gemini-2.5-flash-preview-04-17",
     generationConfig,
   });
 
@@ -220,36 +223,28 @@ function updateUI(data) {
   }
 }
 
-function saveToHistory(data, createdBy = "unknown", createdAt = new Date().toLocaleString("vi-VN")) {
-  const historyItem = {
-    title: data.title,
-    image: data.imageUrl,
-    genres: data.genres,
-    description: data.description,
-    features: data.features,
-    system_requirements: data.system_requirements,
-    similar_games: data.similar_games,
-    createdBy: createdBy,
-    createdAt: createdAt,
-    imageUrl: data.imageUrl,
-  };
-
-  let history = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-  history.unshift(historyItem);
-
-  localStorage.setItem('searchHistory', JSON.stringify(history));
-}
-
 async function initializeApp() {
   const searchValue = localStorage.getItem("searchValue");
+  // Lấy email từ localStorage (currentUser)
+  let email = "unknown";
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (currentUser && (currentUser.email || currentUser[0]?.email)) {
+    email = currentUser.email || currentUser[0].email;
+  }
   if (searchValue) {
     try {
       showLoading();
       const data = await getGameData(searchValue);
       if (data) {
         updateUI(data);
-        saveToHistory(data);
-        console.log(data)
+        // Lưu lịch sử lên Firebase với email
+        const historyObj = History({
+          ...data,
+          createdBy: email,
+          comments: [],
+        });
+        await addHistory(historyObj);
+        console.log(data);
       }
     } catch (error) {
       console.error("Lỗi khi gọi API hoặc xử lý dữ liệu:", error);
