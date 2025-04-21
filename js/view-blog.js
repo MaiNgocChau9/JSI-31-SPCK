@@ -80,20 +80,23 @@ async function renderComments() {
     return;
   }
   comment_list.innerHTML = "";
+  comment_list.className = "comment-list";
   for (const comment of blog.comments) {
     const li = document.createElement("li");
-    li.className = "list-group-item";
+    li.className = "comment-item";
     const user = await getUser(comment.user);
     li.innerHTML = `
-      <div>
-        <img src="${user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || comment.user)}`}" alt="avatar" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
-        <strong>${user?.name || comment.user}</strong>
-        <span class="text-muted" style="font-size:0.8em;">${new Date(comment.postedAt).toLocaleDateString('vi-VN')}</span>
+      <img src="${user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || comment.user)}`}" alt="avatar" class="comment-avatar">
+      <div class="comment-content">
+        <div>
+          <span class="comment-author">${user?.name || comment.user}</span>
+          <span class="comment-date">${new Date(comment.postedAt).toLocaleDateString('vi-VN')}</span>
+        </div>
+        <div class="comment-text">${comment.content}</div>
       </div>
-      <p>${comment.content}</p>
     `;
     comment_list.appendChild(li);
-  };
+  }
 }
 
 renderComments();
