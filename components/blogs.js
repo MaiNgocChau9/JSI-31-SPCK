@@ -4,6 +4,7 @@ import {
   doc,
   setDoc,
   getDocs,
+  getDoc,
   query,
   where,
   serverTimestamp,
@@ -44,4 +45,18 @@ export async function getAllBlogs() {
   const blogsRef = collection(firestore, "blogs");
   const querySnapshot = await getDocs(blogsRef);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+// Hàm đăng comments
+export async function addComment(blogId, comment) {
+  const blogRef = doc(firestore, "blogs", blogId);
+  const blogDoc = await getDoc(blogRef);
+  if (blogDoc.exists()) {
+    const blogData = blogDoc.data();
+    const comments = blogData.comments || [];
+    comments.push(comment);
+    await setDoc(blogRef, { comments }, { merge: true });
+  } else {
+    console.log("No such document!");
+  }
 }

@@ -104,18 +104,17 @@
           <!-- Comments Section -->
           <section class="comments-section mt-5" data-aos="fade-up">
               <h3 class="section-title">Bình luận</h3>
+              <div id="comments-list">
+                <div class="no-comments">Chưa có bình luận</div>
+              </div>
               <form id="comment-form" class="mb-4">
                 <div class="input-group">
                   <textarea id="comment-content" class="form-control" placeholder="Nhập bình luận của bạn..." rows="2" required></textarea>
-                  <button class="btn btn-primary" type="submit" id="submit-comment">
+                  <a class="btn btn-primary" type="submit" id="submit-comment">
                     <i class="fas fa-paper-plane"></i> Gửi
-                  </button>
+                  </a>
                 </div>
               </form>
-              <div id="comments-list">
-                <!-- Danh sách bình luận sẽ được render ở đây -->
-                <div class="no-comments" style="display:none;">Chưa có bình luận</div>
-              </div>
           </section>
         </div>
       </div>

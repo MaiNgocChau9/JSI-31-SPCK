@@ -1,4 +1,4 @@
-import { getAllBlogs } from "../components/blogs.js";
+import { getAllBlogs, addComment } from "../components/blogs.js";
 import { getUser } from "../components/users.js";
 
 function getBlogIdFromUrl() {
@@ -44,3 +44,56 @@ async function renderBlog() {
 }
 
 window.addEventListener("DOMContentLoaded", renderBlog);
+
+const submit_comment = document.querySelector("#submit-comment");
+const comment_input = document.querySelector("#comment-content");
+const comment_list = document.querySelector("#comments-list");
+
+submit_comment.addEventListener("click", async function () {
+  const blogId = getBlogIdFromUrl();
+  const commentText = comment_input.value.trim();
+  if (!commentText) {
+    alert("Vui lòng nhập bình luận!");
+    return;
+  }
+  const user = JSON.parse(localStorage.getItem("currentUser"))[0];
+  if (!user) {
+    alert("Vui lòng đăng nhập để bình luận!");
+    return;
+  }
+  const comment = {
+    content: commentText,
+    postedAt: new Date().toISOString(),
+    user: user.email,
+  };
+  await addComment(blogId, comment);
+  comment_input.value = "";
+  renderComments();
+});
+
+async function renderComments() {
+  const blogId = getBlogIdFromUrl();
+  const blogs = await getAllBlogs();
+  const blog = blogs.find(b => b.id === blogId);
+  if (!blog || !blog.comments) {
+    comment_list.innerHTML = '<div class="text-danger">Không có bình luận nào!</div>';
+    return;
+  }
+  comment_list.innerHTML = "";
+  for (const comment of blog.comments) {
+    const li = document.createElement("li");
+    li.className = "list-group-item";
+    const user = await getUser(comment.user);
+    li.innerHTML = `
+      <div>
+        <img src="${user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || comment.user)}`}" alt="avatar" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;">
+        <strong>${user?.name || comment.user}</strong>
+        <span class="text-muted" style="font-size:0.8em;">${new Date(comment.postedAt).toLocaleDateString('vi-VN')}</span>
+      </div>
+      <p>${comment.content}</p>
+    `;
+    comment_list.appendChild(li);
+  };
+}
+
+renderComments();
