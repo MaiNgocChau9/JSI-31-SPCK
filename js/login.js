@@ -1,17 +1,4 @@
-const users = [
-  {
-    name: "Admin",
-    email: "admin@admin.com",
-    password: "admin@admin",
-    role: "ADMIN",
-  },
-  {
-    name: "Nguyen Van A",
-    email: "nguyenvana@gmail.com",
-    password: "123456",
-    role: "USER",
-  },
-];
+import { getUser } from "../components/users";
 
 if (!localStorage.getItem("users")) {
   localStorage.setItem("users", JSON.stringify(users));
@@ -20,12 +7,11 @@ if (!localStorage.getItem("users")) {
 document.getElementById("loginForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
-  const usersLocalStorage = JSON.parse(localStorage.getItem("users"));
-
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
-  const foundUser = usersLocalStorage.filter((user) => user.email === email)[0];
+  const foundUser = getUser(email);
+  console.log("Found")
   console.log(foundUser)
 
   if (foundUser) {

@@ -646,6 +646,47 @@ main {
   transform: translateY(-5px);
 }
 
+/* Search Form (giống admin) */
+.search-form {
+  margin-bottom: 2rem;
+}
+.search-wrapper {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.search-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  padding-right: 3rem;
+  border: 2px solid var(--secondary);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  background: var(--background);
+  color: var(--text);
+  transition: all 0.3s;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(181, 156, 74, 0.2);
+}
+.search-btn {
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  color: var(--primary);
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.search-btn:hover {
+  color: var(--accent);
+}
+
 /* Responsive */
 @media (max-width: 991.98px) {
   .blog-title {
@@ -789,4 +830,16 @@ main {
   transform: scaleX(1);
   left: 0px;
   transform-origin: right;
+}
+
+.blogs-no-result {
+  color: var(--meta-color);
+  background: var(--card-bg);
+  border-radius: 0.5rem;
+  padding: 1.5rem 1rem;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  text-align: center;
+  transition: background 0.3s, color 0.3s;
 }

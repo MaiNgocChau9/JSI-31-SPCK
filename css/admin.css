@@ -340,6 +340,17 @@ body {
   color: var(--background);
 }
 
+.delete-user-btn {
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  background: transparent;
+}
+
+.delete-user-btn:hover {
+  background-color: #dc3545;
+  color: #fff;
+}
+
 /* Modal Styles */
 .modal-content {
   background-color: var(--background);
@@ -401,4 +412,11 @@ body {
 
 p {
   color: var(--text);
+}
+
+.action-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
 }

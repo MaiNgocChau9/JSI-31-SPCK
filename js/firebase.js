@@ -53,8 +53,8 @@ if (loginForm) {
                 // Lưu dữ liệu người dùng vào Firestore
                 const user = await getUser(email);
                 console.log(user);
-                
-                window.location.href = './index.html';
+                alert('Đăng nhập thành công!');
+                window.location.href = '../index.html';
             })
             .catch((error) => alert(error.message));
     });
@@ -141,22 +141,23 @@ if (userNameSection) {
 }
 
 //! Kiểm tra trạng thái đăng nhập
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
     if (user) {
+        const userData = await getUser(user.email);
         if (userEmailDisplay) {
-            userEmailDisplay.textContent = user.displayName || user.email;
+            userEmailDisplay.textContent = userData?.name || user.email;
         }
-        console.log("Current user:", user); // Add this line to check user details
+        console.log("Current user:", userData);
         localStorage.setItem('currentUser', JSON.stringify([{
-            name: user.displayName,
-            email: user.email,
-            photoURL: user.photoURL,
-            role: user.role || "USER",
+            name: userData?.username || user.displayName,
+            email: userData?.email || user.email,
+            photoURL: userData?.avatar || user.photoURL,
+            role: userData?.role || "USER",
         }]));
     } else {
         if (userEmailDisplay) {
             userEmailDisplay.textContent = "Không xác định";
         }
-        console.log("No user signed in"); // Add this line to confirm when no user is signed in
+        console.log("No user signed in");
     }
 });

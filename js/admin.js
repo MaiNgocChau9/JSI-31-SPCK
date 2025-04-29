@@ -1,5 +1,8 @@
+import { getDocs, collection, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js";
+import { firestore } from "./firebase.js";
+
 // Kiểm tra người dùng có phải admin không, nếu không thì chuyển về trang chủ
-const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+const currentUser = JSON.parse(localStorage.getItem("currentUser"))[0];
 if (!currentUser || currentUser.role !== "ADMIN") {
   window.location.href = "../index.html";
 }
@@ -38,58 +41,48 @@ function updateThemeIcon(theme) {
 
 // User role management
 const roleModal = new bootstrap.Modal(document.getElementById("roleModal"));
-let selectedUserEmail = null;
-const usersData = JSON.parse(localStorage.getItem("users")) || [];
+let selectedUserId = null;
+let usersData = [];
 
-// Load and display users
-function displayUsers() {
+// Load and display users from Firestore
+async function fetchUsersFromFirestore() {
+  const usersCol = collection(firestore, "users");
+  const snapshot = await getDocs(usersCol);
+  return snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+}
+
+async function displayUsers() {
+  usersData = await fetchUsersFromFirestore();
   const tableBody = document.querySelector(".accounts-table tbody");
   const searchInput = document.querySelector(".search-input");
 
   let filteredUsers = [...usersData];
-
-  // Apply search
   const searchTerm = searchInput.value.toLowerCase();
   if (searchTerm) {
     filteredUsers = filteredUsers.filter(
       (user) =>
-        user.name.toLowerCase().includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm)
+        (user.username || "").toLowerCase().includes(searchTerm) ||
+        (user.email || "").toLowerCase().includes(searchTerm)
     );
   }
-
-  // Clear existing rows
+  filteredUsers = filteredUsers.filter(user => user.email !== "admin@admin.com");
   tableBody.innerHTML = "";
-
-  // Add filtered users to table
   filteredUsers.forEach((user) => {
     const row = `
-                    <tr>
-                        <td>
-                            <div class="user-info">
-                                <span>${user.name}</span>
-                            </div>
-                        </td>
-                        <td>${user.email}</td>
-                        <td>
-                            <span class="role-badge role-${user.role.toLowerCase()}">${
-      user.role
-    }</span>
-                        </td>
-                        <td>
-                            <button class="role-toggle-btn" data-email="${
-                              user.email
-                            }" title="Chuyển đổi vai trò">
-                                <i class="fas fa-exchange-alt"></i>
-                                Chuyển vai trò
-                            </button>
-                        </td>
-                    </tr>
-                `;
+      <tr>
+        <td><div class="user-info"><span>${user.username || user.name || "Ẩn danh"}</span></div></td>
+        <td>${user.email}</td>
+        <td><span class="role-badge role-${(user.role || "user").toLowerCase()}">${user.role || "USER"}</span></td>
+        <td>
+          <div class="action-btns d-flex flex-wrap justify-content-center gap-2">
+            <button class="role-toggle-btn" data-id="${user.id}" title="Chuyển đổi vai trò"><i class="fas fa-exchange-alt"></i>Chuyển vai trò</button>
+            <button class="delete-user-btn role-toggle-btn" data-id="${user.id}" title="Xóa người dùng"><i class="fas fa-trash-alt"></i> Xóa</button>
+          </div>
+        </td>
+      </tr>
+    `;
     tableBody.insertAdjacentHTML("beforeend", row);
   });
-
-  // Reattach event listeners to new buttons
   attachRoleToggleListeners();
 }
 
@@ -106,57 +99,58 @@ roleOptions.forEach((option) => {
 function attachRoleToggleListeners() {
   const roleButtons = document.querySelectorAll(".role-toggle-btn");
   roleButtons.forEach((button) => {
-    button.addEventListener("click", function () {
-      selectedUserEmail = this.dataset.email;
-      const user = usersData.find((u) => u.email === selectedUserEmail);
-
-      // Pre-select current role in modal
-      roleOptions.forEach((option) => {
-        if (option.dataset.role === user.role) {
-          option.classList.add("selected");
-        } else {
-          option.classList.remove("selected");
-        }
+    // Chỉ gán sự kiện cho nút chuyển vai trò, không phải nút xóa
+    if (!button.classList.contains("delete-user-btn")) {
+      button.addEventListener("click", function () {
+        selectedUserId = this.dataset.id;
+        const user = usersData.find((u) => u.id === selectedUserId);
+        roleOptions.forEach((option) => {
+          if (option.dataset.role === user.role) {
+            option.classList.add("selected");
+          } else {
+            option.classList.remove("selected");
+          }
+        });
+        roleModal.show();
       });
+    }
+  });
 
-      roleModal.show();
+  // Xử lý xóa người dùng
+  const deleteButtons = document.querySelectorAll(".delete-user-btn");
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async function (e) {
+      e.stopPropagation();
+      const userId = this.dataset.id;
+      const user = usersData.find((u) => u.id === userId);
+      if (!user) return;
+      const confirmEmail = prompt("Nhập lại email của người dùng để xác nhận xóa:");
+      if (confirmEmail && confirmEmail.trim().toLowerCase() === (user.email || '').toLowerCase()) {
+        await deleteUserFromFirestore(userId);
+        await displayUsers();
+      } else if (confirmEmail !== null) {
+        alert("Email xác nhận không đúng. Không xóa người dùng.");
+      }
     });
   });
 }
 
 // Handle save role changes
-document
-  .getElementById("saveRoleButton")
-  .addEventListener("click", function () {
-    const selectedRole = document.querySelector(".role-option.selected");
-    if (selectedRole && selectedUserEmail) {
-      const newRole = selectedRole.dataset.role;
-      const userIndex = usersData.findIndex(
-        (u) => u.email === selectedUserEmail
-      );
-
-      if (userIndex !== -1) {
-        // Update role
-        usersData[userIndex].role = newRole;
-
-        // Update localStorage
-        localStorage.setItem("users", JSON.stringify(usersData));
-
-        // Update current user if the changed user is logged in
-        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-        if (currentUser && currentUser.email === selectedUserEmail) {
-          localStorage.setItem(
-            "currentUser",
-            JSON.stringify(usersData[userIndex])
-          );
-        }
-
-        // Refresh display and close modal
-        displayUsers();
-        roleModal.hide();
-      }
+const saveRoleButton = document.getElementById("saveRoleButton");
+saveRoleButton.addEventListener("click", async function () {
+  const selectedRole = document.querySelector(".role-option.selected");
+  if (selectedRole && selectedUserId) {
+    const newRole = selectedRole.dataset.role;
+    const user = usersData.find((u) => u.id === selectedUserId);
+    if (user) {
+      // Update Firestore
+      await updateDoc(doc(firestore, "users", user.id), { role: newRole });
+      // Refresh display and close modal
+      await displayUsers();
+      roleModal.hide();
     }
-  });
+  }
+});
 
 const userNameSection = document.querySelector(".userNameSection");
 const login_register = document.querySelector(".login_register");
@@ -165,9 +159,7 @@ if (currentUser && window.innerWidth < 991) {
   userNameSection.textContent = "Đăng xuất";
   userNameSection.classList.remove("d-none");
   login_register.classList.add("d-none");
-}
-// Here
-else if (currentUser) {
+} else if (currentUser) {
   userNameSection.textContent = `✦ ${currentUser.name} ✦`;
   userNameSection.classList.remove("d-none");
   login_register.classList.add("d-none");
@@ -197,7 +189,18 @@ userNameSection.addEventListener("mouseout", () => {
 });
 
 // Search and filter functionality
-document.querySelector(".search-input").addEventListener("input", displayUsers);
+document.querySelector(".search-input").addEventListener("input", function() {
+  if (!this.value.trim()) {
+    displayUsers(); // Nếu rỗng thì load lại tất cả user
+  } else {
+    displayUsers(); // Vẫn gọi để filter theo input
+  }
+});
 
-// Initial display
-displayUsers();
+// Initial load
+window.addEventListener("DOMContentLoaded", displayUsers);
+
+// Xóa user khỏi Firestore
+async function deleteUserFromFirestore(userId) {
+  await deleteDoc(doc(firestore, "users", userId));
+}
