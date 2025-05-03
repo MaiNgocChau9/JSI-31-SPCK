@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trang Cá Nhân - Game Mood</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="../css/profile.css">
+</head>
+<body id="profile-page">
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container">
+      <a class="navbar-brand" href="../index.html">
+        <i class="fas fa-gamepad brand-icon"></i>
+        Game Mood
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="../index.html">Trang chủ</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="blogs.html">Bài viết</a>
+          </li>
+          <li class="nav-item">
+            <div class="theme-toggle-wrapper">
+              <button id="theme-toggle" class="btn btn-theme">
+                <i class="fas fa-sun theme-icon-light"></i>
+                <i class="fas fa-moon theme-icon-dark"></i>
+              </button>
+            </div>
+          </li>
+          <li class="nav-item" id="user-menu-container">
+            <!-- User menu sẽ được thêm vào bởi updateUserElement.js -->
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <div class="profile-header">
+    <img id="profile-avatar" class="profile-avatar" src="" alt="Avatar">
+    <div class="profile-name" id="display-name">Tên người dùng</div>
+    <div class="profile-username" id="display-username"></div>
+    <div class="profile-intro" id="display-intro">Giới thiệu bản thân...</div>
+    <div class="profile-actions">
+      <button class="btn" id="edit-profile-btn">Chỉnh sửa hồ sơ</button>
+    </div>
+  </div>
+
+  <!-- Form chỉnh sửa profile (ẩn/hiện bằng JS) -->
+  <form id="profile-edit-form" class="profile-edit-form" style="display:none;">
+    <label for="avatar-url">URL avatar</label>
+    <input type="url" id="avatar-url" placeholder="Dán URL ảnh..." required>
+    <label for="profile-name-input">Tên hiển thị</label>
+    <input type="text" id="profile-name-input" maxlength="40" required>
+    <label for="profile-intro-input">Giới thiệu (tối đa 200 ký tự)</label>
+    <textarea id="profile-intro-input" maxlength="200" rows="3"></textarea>
+    <div style="display:flex; gap:1rem; justify-content:flex-end;">
+      <button type="button" class="btn btn-secondary" id="cancel-edit-btn">Hủy</button>
+      <button type="submit" class="btn btn-save">Lưu</button>
+    </div>
+  </form>
+
+  <div class="profile-tabs">
+    <button class="profile-tab active" id="tab-posts">Bài viết</button>
+    <!-- Có thể thêm tab khác nếu cần -->
+  </div>
+
+  <section class="profile-posts-section">
+    <div id="blog-list" class="profile-posts-grid"></div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="../js/profile.js"></script>
+  <script type="module" src="../js/updateUserElement.js"></script>
+  <script src="../js/switch_theme.js"></script>
+</body>
+</html>

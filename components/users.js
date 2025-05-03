@@ -46,8 +46,24 @@ export async function getUser(email) {
 
   if (!querySnapshot.empty) {
     // Assuming email is unique and you want the first match
-    return querySnapshot.docs[0].data();
+    const doc = querySnapshot.docs[0];
+    return { id: doc.id, ...doc.data() };
   } else {
     return null; // No user found
   }
 }
+
+// export async function editUser(email, newData) {
+//   const usersRef = collection(firestore, "users");
+//   const q = query(usersRef, where("email", "==", email));
+//   const querySnapshot = await getDocs(q);
+
+//   if (!querySnapshot.empty) {
+//     // Assuming email is unique and you want the first match
+//     const doc = querySnapshot.docs[0];
+//     const userRef = doc(firestore, "users", doc.id);
+//     await setDoc(userRef, newData, { merge: true });
+//   } else {
+//     return null; // No user found
+//   }
+// }

@@ -32,7 +32,7 @@ const loginForm = document.querySelector('#loginForm');
 const signupForm = document.querySelector('#registerForm');
 const googleLoginBtn = document.querySelector('#google-login-btn');
 const googleSignupBtn = document.querySelector('#google-signup-btn');
-const userNameSection = document.querySelector(".userNameSection");
+const logout = document.querySelector(".logout");
 const userEmailDisplay = document.querySelector('#user-email');
 
 //! Xử lý đăng nhập Email/Password
@@ -127,8 +127,8 @@ googleSignupBtn?.addEventListener('click', () => {
 });
 
 //! Xử lý đăng xuất
-if (userNameSection) {
-    userNameSection?.addEventListener('click', () => {
+if (logout) {
+    logout?.addEventListener('click', () => {
         if (confirm('Bạn có chắc chắn muốn đăng xuất?')) {
             signOut(auth)
                 .then(() => {

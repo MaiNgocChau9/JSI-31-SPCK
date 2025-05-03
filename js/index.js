@@ -123,8 +123,3 @@ categoryCards.forEach((card) => {
     }
   });
 });
-
-const admin_manage = document.querySelector(".admin-manage");
-if (nowCurrentUser && nowCurrentUser.role === "ADMIN") {
-  admin_manage.classList.remove("d-none");
-}
