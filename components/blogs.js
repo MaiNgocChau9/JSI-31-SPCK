@@ -47,6 +47,14 @@ export async function getAllBlogs() {
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
+// Hàm lấy danh sách bài viết của người dùng theo email
+export async function getBlogsByEmail(email) {
+  const blogsRef = collection(firestore, "blogs");
+  const q = query(blogsRef, where("postedBy", "==", email));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
 // Hàm đăng comments
 export async function addComment(blogId, comment) {
   const blogRef = doc(firestore, "blogs", blogId);

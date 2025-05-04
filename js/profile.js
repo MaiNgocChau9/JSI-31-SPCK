@@ -1,6 +1,7 @@
 import { auth } from "./firebase.js";
-import { getUser, updateUserInfo } from "../components/users.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+import { getUser, updateUserInfo } from "../components/users.js";
+import { getBlogsByEmail } from "../components/blogs.js";
 
 // DOM elements
 const avatarImg = document.getElementById("profile-avatar");
@@ -15,7 +16,7 @@ const editBtn = document.getElementById("edit-profile-btn");
 const cancelBtn = document.getElementById("cancel-edit-btn");
 const blogList = document.getElementById("blog-list");
 
-let currentUserEmail = null;
+let currentUserEmail = JSON.parse(localStorage.getItem("currentUser"))[0].email || null;
 let userDocId = null;
 
 // Hiển thị/ẩn form chỉnh sửa
@@ -90,5 +91,23 @@ editForm.addEventListener("submit", async (e) => {
     }
 });
 
-// Lấy bài viết của user
-// TODO: Thay thế phần lấy bài viết nếu không dùng firestore nữa
+//TODO: Lấy bài viết của user
+async function loadUserBlogs() {
+    try {
+        console.log("Lấy bài viết của user:", currentUserEmail);
+        const blogs = await getBlogsByEmail(currentUserEmail);
+        console.log("Blogs:", blogs);
+        blogList.innerHTML = "";
+
+        blogs.forEach(blog => {
+            const blogItem = document.createElement("li");
+            blogItem.textContent = blog.title;
+            blogList.appendChild(blogItem);
+        });
+    } catch (error) {
+        console.error("Lỗi khi lấy bài viết:", error);
+        alert("Có lỗi xảy ra khi lấy bài viết!");
+    }
+}
+
+loadUserBlogs();
