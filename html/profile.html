@@ -12,45 +12,63 @@
 <body id="profile-page">
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg fixed-top">
-    <div class="container">
-      <a class="navbar-brand" href="../index.html">
-        <i class="fas fa-gamepad brand-icon"></i>
-        Game Mood
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNav"
-        aria-controls="navbarNav"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav align-items-center">
-          <li class="nav-item">
-            <a class="nav-link" href="../index.html">Trang chủ</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="blogs.html">Bài viết</a>
-          </li>
-          <li class="nav-item">
-            <div class="theme-toggle-wrapper">
-              <button id="theme-toggle" class="btn btn-theme">
-                <i class="fas fa-sun theme-icon-light"></i>
-                <i class="fas fa-moon theme-icon-dark"></i>
-              </button>
-            </div>
-          </li>
-          <li class="nav-item" id="user-menu-container">
-            <!-- User menu sẽ được thêm vào bởi updateUserElement.js -->
-          </li>
-        </ul>
+      <div class="container">
+        <a class="navbar-brand" href="../index.html"> <!-- Adjusted path -->
+          <i class="fas fa-gamepad brand-icon"></i>
+          Game Mood
+        </a>
+        <div class="theme-toggle-wrapper">
+          <button id="theme-toggle" class="btn btn-theme">
+            <i class="fas fa-sun theme-icon-light"></i>
+            <i class="fas fa-moon theme-icon-dark"></i>
+          </button>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+        <div
+          class="collapse navbar-collapse justify-content-end"
+          id="navbarNav"
+        >
+          <ul class="navbar-nav text-center">
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html#home">Trang chủ</a> <!-- Adjusted path -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html#about">Giới thiệu</a> <!-- Adjusted path -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../html/blogs.html">Bài viết</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../index.html#contact">Liên hệ</a> <!-- Adjusted path -->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="../html/history.html">Lịch sử</a> <!-- Active link -->
+            </li>
+            <li class="nav-item admin-manage d-none">
+              <a class="nav-link" href="./admin.html">Quản lí</a> <!-- Path correct -->
+            </li>
+            <li class="nav-item d-flex m-auto login_register">
+              <a class="btn btn-login" href="./login.html">Đăng nhập</a> <!-- Path correct -->
+              <a class="btn btn-register" href="./register.html">Đăng ký</a> <!-- Path correct -->
+            </li>
+            <li class="nav-item d-flex m-auto">
+              <!-- Placeholder for user/logout, JS will handle visibility -->
+              <a class="btn userNameSection d-none">Đăng xuất</a>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
 
   <div class="profile-header">
     <img id="profile-avatar" class="profile-avatar" src="" alt="Avatar">

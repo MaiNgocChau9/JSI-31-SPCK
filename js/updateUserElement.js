@@ -30,6 +30,14 @@ async function createUserMenu(currentUser) {
     userNameSection.classList.remove('d-none');
     login_register.classList.add('d-none');
 
+    // Lấy biến CSS từ :root
+    const rootStyles = getComputedStyle(document.documentElement);
+    const primary = rootStyles.getPropertyValue('--primary').trim();
+    const accent = rootStyles.getPropertyValue('--accent').trim();
+    const background = rootStyles.getPropertyValue('--background').trim();
+    const text = rootStyles.getPropertyValue('--text').trim();
+    const secondary = rootStyles.getPropertyValue('--secondary').trim();
+
     // Lấy thông tin user từ Firestore để lấy avatar mới nhất
     let email = Array.isArray(currentUser) ? currentUser[0]?.email : currentUser.email;
     let userInfo = await getUser(email);
@@ -43,23 +51,22 @@ async function createUserMenu(currentUser) {
     avatar.style.borderRadius = '50%';
     avatar.style.objectFit = 'cover';
     avatar.style.cursor = 'pointer';
-    avatar.style.border = '2px solid var(--primary)'; // Sử dụng màu chính
+    avatar.style.border = `2px solid ${primary}`;
     avatar.style.boxShadow = 'none';
-    avatar.style.background = 'var(--background)';
+    avatar.style.background = background;
     avatar.style.transition = 'box-shadow 0.2s, border-color 0.2s, background 0.2s';
     avatar.alt = 'avatar';
     avatar.src = avatarUrl;
 
-    // Hover effect cho avatar dùng màu theme, đơn giản, tinh tế
     avatar.addEventListener('mouseenter', () => {
-        avatar.style.boxShadow = '0 2px 8px 0 var(--primary)';
-        avatar.style.borderColor = 'var(--accent)';
-        avatar.style.background = 'var(--background)';
+        avatar.style.boxShadow = `0 2px 8px 0 ${primary}`;
+        avatar.style.borderColor = accent;
+        avatar.style.background = background;
     });
     avatar.addEventListener('mouseleave', () => {
         avatar.style.boxShadow = 'none';
-        avatar.style.borderColor = 'var(--primary)';
-        avatar.style.background = 'var(--background)';
+        avatar.style.borderColor = primary;
+        avatar.style.background = background;
     });
 
     // Tạo menu dropdown
@@ -68,8 +75,8 @@ async function createUserMenu(currentUser) {
     menu.style.position = 'absolute';
     menu.style.top = '48px';
     menu.style.right = '0';
-    menu.style.background = '#fff';
-    menu.style.border = '1.5px solid #e3e8ef';
+    menu.style.background = background;
+    menu.style.border = `1.5px solid ${secondary}`;
     menu.style.borderRadius = '12px';
     menu.style.boxShadow = '0 8px 32px rgba(80,120,200,0.18)';
     menu.style.display = 'none';
@@ -84,18 +91,18 @@ async function createUserMenu(currentUser) {
     manageAccount.textContent = 'Quản lý tài khoản';
     manageAccount.style.display = 'block';
     manageAccount.style.padding = '12px 24px';
-    manageAccount.style.color = '#222';
+    manageAccount.style.color = text;
     manageAccount.style.textDecoration = 'none';
     manageAccount.style.fontWeight = '500';
     manageAccount.style.fontSize = '16px';
     manageAccount.style.transition = 'background 0.15s, color 0.15s';
     manageAccount.addEventListener('mouseenter', () => {
-        manageAccount.style.background = '#f0f6ff';
-        manageAccount.style.color = '#2563eb';
+        manageAccount.style.background = 'rgba(223, 206, 150, 0.1)';
+        manageAccount.style.color = text;
     });
     manageAccount.addEventListener('mouseleave', () => {
         manageAccount.style.background = 'none';
-        manageAccount.style.color = '#222';
+        manageAccount.style.color = text;
     });
     manageAccount.addEventListener('click', (e) => {
         e.preventDefault();
@@ -110,18 +117,18 @@ async function createUserMenu(currentUser) {
         adminLink.textContent = 'Quản trị viên';
         adminLink.style.display = 'block';
         adminLink.style.padding = '12px 24px';
-        adminLink.style.color = '#222';
+        adminLink.style.color = text;
         adminLink.style.textDecoration = 'none';
         adminLink.style.fontWeight = '500';
         adminLink.style.fontSize = '16px';
         adminLink.style.transition = 'background 0.15s, color 0.15s';
         adminLink.addEventListener('mouseenter', () => {
-            adminLink.style.background = '#f0f6ff';
-            adminLink.style.color = '#2563eb';
+            adminLink.style.background = 'rgba(223, 206, 150, 0.1)';
+            adminLink.style.color = text;
         });
         adminLink.addEventListener('mouseleave', () => {
             adminLink.style.background = 'none';
-            adminLink.style.color = '#222';
+            adminLink.style.color = text;
         });
         adminLink.addEventListener('click', (e) => {
             e.preventDefault();
@@ -137,18 +144,18 @@ async function createUserMenu(currentUser) {
     logout.textContent = 'Đăng xuất';
     logout.style.display = 'block';
     logout.style.padding = '12px 24px';
-    logout.style.color = '#e74c3c';
+    logout.style.color = 'var(--danger, #e74c3c)';
     logout.style.textDecoration = 'none';
     logout.style.fontWeight = '500';
     logout.style.fontSize = '16px';
     logout.style.transition = 'background 0.15s, color 0.15s';
     logout.addEventListener('mouseenter', () => {
-        logout.style.background = '#fbeaea';
-        logout.style.color = '#c0392b';
+        logout.style.background = 'rgba(231, 76, 60, 0.05)';
+        logout.style.color = 'var(--danger, #e74c3c)';
     });
     logout.addEventListener('mouseleave', () => {
         logout.style.background = 'none';
-        logout.style.color = '#e74c3c';
+        logout.style.color = 'var(--danger, #e74c3c)';
     });
     logout.addEventListener('click', (e) => {
         e.preventDefault();
