@@ -267,6 +267,7 @@ body#profile-page {
 .profile-post-intro {
   color: var(--text-light);
   margin-bottom: 1rem;
+  margin-top: 1rem;
   line-height: 1.6;
 }
 
@@ -289,7 +290,6 @@ body#profile-page {
   box-shadow: none;
   cursor: pointer;
   transition: box-shadow 0.2s, border-color 0.2s, background 0.2s, transform 0.15s;
-  margin-left: 0.5rem;
 }
 .user-avatar:hover {
   box-shadow: 0 2px 8px 0 var(--primary);
@@ -396,4 +396,31 @@ body#profile-page {
 
 .profile-post-card {
   animation: fadeIn 0.3s ease-out;
+}
+
+.read-more-btn {
+  background-color: transparent;
+  color: var(--primary);
+  border: 1px solid var(--primary);
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  align-self: flex-start; /* Align button to the left */
+  margin-top: auto; /* Push to bottom */
+}
+
+.read-more-btn:hover {
+  background-color: var(--primary);
+  color: var(--background);
+}
+
+.read-more-btn i {
+  margin-left: 0.3rem;
+  transition: transform 0.3s ease;
+}
+.read-more-btn:hover i {
+  transform: translateX(4px);
 }

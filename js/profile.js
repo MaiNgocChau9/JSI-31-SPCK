@@ -43,7 +43,7 @@ onAuthStateChanged(auth, async (user) => {
         updateUI(userDoc); // Cập nhật UI với thông tin user
     }
     
-    // loadUserBlogs(); // TODO: Thay thế phần lấy bài viết nếu không dùng firestore nữa
+    loadUserBlogs(); // TODO: Thay thế phần lấy bài viết nếu không dùng firestore nữa
 });
 
 // Hàm cập nhật UI từ data user
@@ -99,11 +99,31 @@ async function loadUserBlogs() {
         console.log("Blogs:", blogs);
         blogList.innerHTML = "";
 
-        blogs.forEach(blog => {
-            const blogItem = document.createElement("li");
-            blogItem.textContent = blog.title;
-            blogList.appendChild(blogItem);
-        });
+        if (blogs.length === 0) {
+            blogList.innerHTML = `<div class='blogs-no-result'>Bạn chưa có bài viết nào.</div>`;
+            return;
+        }
+
+        // Lấy thông tin user 1 lần
+        const user = await getUser(currentUserEmail);
+        const name = user?.username || user?.name || currentUserEmail;
+        const avatar = user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}`;
+
+        blogList.innerHTML = blogs.map(blog => `
+            <div class="profile-post-card">
+                <img class="profile-post-thumb" src="${blog.thumbnail || ''}" alt="Thumbnail">
+                <div class="profile-post-content">
+                    <h3 class="profile-post-title">${blog.title}</h3>
+                    <div class="profile-post-metad-flex align-items-center">
+                        <img src="${avatar}" alt="avatar" class="user-avatar" style="width:28px;height:28px;object-fit:cover;"> ${name}
+                        <span class="mx-2">|</span>
+                        <i class="fas fa-calendar-alt"></i> ${blog.postedAt ? (new Date(blog.postedAt.seconds ? blog.postedAt.seconds * 1000 : blog.postedAt)).toLocaleDateString("vi-VN") : ""}
+                    </div>
+                    <div class="profile-post-intro">${blog.description || ''}</div>
+                    <a href="./view-blog.html?id=${blog.id}" class="btn read-more-btn">Đọc chi tiết <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+        `).join("");
     } catch (error) {
         console.error("Lỗi khi lấy bài viết:", error);
         alert("Có lỗi xảy ra khi lấy bài viết!");
