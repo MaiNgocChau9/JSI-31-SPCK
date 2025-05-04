@@ -3,10 +3,9 @@ import {
   collection,
   getDocs,
   doc,
+  updateDoc,
   setDoc,
-  getDoc,
   query,
-  serverTimestamp,
   where,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js";
 
@@ -53,17 +52,24 @@ export async function getUser(email) {
   }
 }
 
-// export async function editUser(email, newData) {
-//   const usersRef = collection(firestore, "users");
-//   const q = query(usersRef, where("email", "==", email));
-//   const querySnapshot = await getDocs(q);
+export async function updateUserInfo(email, data) {
+  try {
+    const usersRef = collection(firestore, "users");
+    const q = query(usersRef, where("email", "==", email));
+    const querySnapshot = await getDocs(q);
 
-//   if (!querySnapshot.empty) {
-//     // Assuming email is unique and you want the first match
-//     const doc = querySnapshot.docs[0];
-//     const userRef = doc(firestore, "users", doc.id);
-//     await setDoc(userRef, newData, { merge: true });
-//   } else {
-//     return null; // No user found
-//   }
-// }
+    if (querySnapshot.empty) {
+      console.error("Không tìm thấy người dùng với email:", email);
+      return false;
+    }
+    
+    // Giả sử chỉ có 1 document phù hợp
+    const userDoc = querySnapshot.docs[0];
+    const userRef = doc(firestore, "users", userDoc.id);
+    await updateDoc(userRef, data);
+    return true;
+  } catch (error) {
+    console.error("Lỗi khi cập nhật thông tin người dùng:", error);
+    return false;
+  }
+}

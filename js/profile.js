@@ -1,6 +1,5 @@
-import { auth, firestore } from "./firebase.js";
-import { getUser } from "../components/users.js";
-import { collection, query, where, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
+import { auth } from "./firebase.js";
+import { getUser, updateUserInfo } from "../components/users.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
 
 // DOM elements
@@ -43,7 +42,7 @@ onAuthStateChanged(auth, async (user) => {
         updateUI(userDoc); // Cập nhật UI với thông tin user
     }
     
-    loadUserBlogs();
+    // loadUserBlogs(); // TODO: Thay thế phần lấy bài viết nếu không dùng firestore nữa
 });
 
 // Hàm cập nhật UI từ data user
@@ -71,8 +70,8 @@ editForm.addEventListener("submit", async (e) => {
     };
     
     try {
-        const userRef = doc(firestore, "users", userDocId);
-        await updateDoc(userRef, updateData);
+        console.log("Cập nhật thông tin:", currentUserEmail, updateData);
+        await updateUserInfo(currentUserEmail, updateData);
         
         // Cập nhật UI
         updateUI({
@@ -83,15 +82,6 @@ editForm.addEventListener("submit", async (e) => {
         // Ẩn form
         editForm.style.display = "none";
         
-        // Cập nhật localStorage để sync với updateUserElement.js
-        let currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
-        if (Array.isArray(currentUser)) {
-            currentUser[0] = { ...currentUser[0], ...updateData };
-        } else {
-            currentUser = { ...currentUser, ...updateData };
-        }
-        localStorage.setItem("currentUser", JSON.stringify(currentUser));
-        
         alert("Đã cập nhật thông tin thành công!");
         
     } catch (error) {
@@ -101,48 +91,4 @@ editForm.addEventListener("submit", async (e) => {
 });
 
 // Lấy bài viết của user
-async function loadUserBlogs() {
-    blogList.innerHTML = '<div class="text-center mt-4">Đang tải...</div>';
-    
-    try {
-        const blogsRef = collection(firestore, "blogs");
-        const q = query(blogsRef, where("postedBy", "==", currentUserEmail));
-        const snap = await getDocs(q);
-        
-        if (snap.empty) {
-            blogList.innerHTML = '<div class="text-center mt-4">Bạn chưa có bài viết nào.</div>';
-            return;
-        }
-        
-        blogList.innerHTML = "";
-        snap.forEach(doc => {
-            const blog = doc.data();
-            const card = document.createElement("div");
-            card.className = "profile-post-card";
-            
-            // Check if blog.createdAt exists and is a valid timestamp
-            const createdAt = blog.createdAt?.toDate?.() || new Date();
-            
-            card.innerHTML = `
-                <img class="profile-post-thumb" src="${blog.thumbnail || 'https://placehold.co/600x400?text=Game+Mood'}" alt="${blog.title}">
-                <div class="profile-post-content">
-                    <h3 class="profile-post-title">${blog.title || "Không có tiêu đề"}</h3>
-                    <p class="profile-post-intro">${blog.intro?.slice(0, 150) || blog.content?.slice(0, 150) || ""}...</p>
-                    <div class="profile-post-meta">
-                        <i class="fas fa-calendar-alt"></i> ${createdAt.toLocaleDateString("vi-VN")}
-                    </div>
-                </div>
-            `;
-            
-            card.addEventListener("click", () => {
-                window.location.href = `view-blog.html?id=${doc.id}`;
-            });
-            
-            blogList.appendChild(card);
-        });
-        
-    } catch (error) {
-        console.error("Lỗi khi tải bài viết:", error);
-        blogList.innerHTML = '<div class="text-center mt-4">Có lỗi xảy ra khi tải bài viết.</div>';
-    }
-}
+// TODO: Thay thế phần lấy bài viết nếu không dùng firestore nữa
