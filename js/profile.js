@@ -91,7 +91,7 @@ editForm.addEventListener("submit", async (e) => {
     }
 });
 
-//TODO: Lấy bài viết của user
+//TODO: Hiện bài viết của user
 async function loadUserBlogs() {
     try {
         console.log("Lấy bài viết của user:", currentUserEmail);
