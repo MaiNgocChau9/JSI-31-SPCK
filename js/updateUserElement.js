@@ -26,9 +26,9 @@ const currentUser = JSON.parse(localStorage.getItem("currentUser")) || null;
 console.log(currentUser);
 
 async function createUserMenu(currentUser) {
-    userNameSection.innerHTML = '';
-    userNameSection.classList.remove('d-none');
-    login_register.classList.add('d-none');
+    userNameSection?.innerHTML = '';
+    userNameSection?.classList.remove('d-none');
+    login_register?.classList.add('d-none');
 
     // Lấy thông tin user từ Firestore để lấy avatar mới nhất
     let email = Array.isArray(currentUser) ? currentUser[0]?.email : currentUser.email;
@@ -151,8 +151,8 @@ async function createUserMenu(currentUser) {
 
     // Thêm avatar và menu vào userNameSection
     userNameSection.style.position = 'relative';
-    userNameSection.appendChild(avatar);
-    userNameSection.appendChild(menu);
+    userNameSection?.appendChild(avatar);
+    userNameSection?.appendChild(menu);
 
     // Sự kiện click avatar để hiện/ẩn menu
     avatar.addEventListener('click', (e) => {
@@ -161,7 +161,7 @@ async function createUserMenu(currentUser) {
     });
     // Ẩn menu khi click ra ngoài
     document.addEventListener('click', (e) => {
-        if (!userNameSection.contains(e.target)) {
+        if (!userNameSection?.contains(e.target)) {
             menu.style.display = 'none';
         }
     });
@@ -170,16 +170,16 @@ async function createUserMenu(currentUser) {
 if (currentUser) {
     createUserMenu(currentUser);
 } else {
-    userNameSection.textContent = '';
-    userNameSection.classList.add('d-none');
-    login_register.classList.remove('d-none');
+    userNameSection?.textContent = '';
+    userNameSection?.classList.add('d-none');
+    login_register?.classList.remove('d-none');
 }
 
 // Xóa border, màu và hiệu ứng hover của .userNameSection để không bị viền vàng hoặc hiệu ứng từ CSS cũ
-userNameSection.style.border = 'none';
-userNameSection.style.color = '';
-userNameSection.style.background = 'transparent';
-userNameSection.style.padding = '0';
-userNameSection.style.transition = 'none';
-userNameSection.onmouseenter = null;
-userNameSection.onmouseleave = null;
+userNameSection?.style.border = 'none';
+userNameSection?.style.color = '';
+userNameSection?.style.background = 'transparent';
+userNameSection?.style.padding = '0';
+userNameSection?.style.transition = 'none';
+userNameSection?.onmouseenter = null;
+userNameSection?.onmouseleave = null;
