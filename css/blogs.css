@@ -1,3 +1,45 @@
+/* Bình luận: icon sửa/xóa chỉ hiện khi hover, dùng icon fontawesome, luôn hiển thị tốt ở darkmode */
+
+/* Hiển thị icon sửa/xóa ở góc trên bên phải bình luận, không chiếm chỗ dưới */
+.comment-content {
+  position: relative;
+}
+.comment-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+  z-index: 2;
+}
+.btn-edit-comment, .btn-delete-comment {
+  background: none;
+  border: none;
+  color: var(--meta-color);
+  font-size: 1.15em;
+  cursor: pointer;
+  padding: 2px 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.btn-delete-comment {
+  color: #e74c3c;
+}
+.comment-item:hover .btn-edit-comment,
+.comment-item:hover .btn-delete-comment {
+  opacity: 1;
+  pointer-events: auto;
+}
+.btn-edit-comment:hover {
+  color: var(--primary);
+}
+.btn-delete-comment:hover {
+  color: #ff3b3b;
+}
 /* Theme Variables (Copied from index.css or admin.css) */
 :root[data-theme="light"] {
   --text: #0c0b08;

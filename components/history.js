@@ -1,3 +1,24 @@
+// Sửa tên lịch sử trò chuyện
+export async function editHistoryTitle(email, oldTitle, newTitle) {
+  const historiesRef = collection(firestore, "history");
+  const q = query(historiesRef, where("createdBy", "==", email), where("title", "==", oldTitle));
+  const querySnapshot = await getDocs(q);
+  if (!querySnapshot.empty) {
+    const docRef = querySnapshot.docs[0].ref;
+    await setDoc(docRef, { title: newTitle }, { merge: true });
+  }
+}
+
+// Xóa lịch sử trò chuyện
+export async function deleteHistory(email, title) {
+  const historiesRef = collection(firestore, "history");
+  const q = query(historiesRef, where("createdBy", "==", email), where("title", "==", title));
+  const querySnapshot = await getDocs(q);
+  if (!querySnapshot.empty) {
+    const docRef = querySnapshot.docs[0].ref;
+    await docRef.delete();
+  }
+}
 import { firestore } from "../js/firebase.js";
 import {
   collection,

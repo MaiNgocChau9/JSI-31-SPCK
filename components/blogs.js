@@ -1,3 +1,31 @@
+// Sửa bình luận
+export async function editComment(blogId, commentIndex, newContent) {
+  const blogRef = doc(firestore, "blogs", blogId);
+  const blogDoc = await getDoc(blogRef);
+  if (blogDoc.exists()) {
+    const blogData = blogDoc.data();
+    const comments = blogData.comments || [];
+    if (comments[commentIndex]) {
+      comments[commentIndex].content = newContent;
+      comments[commentIndex].editedAt = new Date().toISOString();
+      await setDoc(blogRef, { comments }, { merge: true });
+    }
+  }
+}
+
+// Xóa bình luận
+export async function deleteComment(blogId, commentIndex) {
+  const blogRef = doc(firestore, "blogs", blogId);
+  const blogDoc = await getDoc(blogRef);
+  if (blogDoc.exists()) {
+    const blogData = blogDoc.data();
+    const comments = blogData.comments || [];
+    if (comments[commentIndex]) {
+      comments.splice(commentIndex, 1);
+      await setDoc(blogRef, { comments }, { merge: true });
+    }
+  }
+}
 import { firestore } from "../js/firebase.js";
 import {
   collection,

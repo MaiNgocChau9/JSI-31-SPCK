@@ -81,10 +81,23 @@ async function renderComments() {
   }
   comment_list.innerHTML = "";
   comment_list.className = "comment-list";
-  for (const comment of blog.comments) {
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"))?.[0];
+  for (let i = 0; i < blog.comments.length; i++) {
+    const comment = blog.comments[i];
     const li = document.createElement("li");
     li.className = "comment-item";
     const user = await getUser(comment.user);
+    let actionBtns = "";
+    if (currentUser && currentUser.email === comment.user) {
+      actionBtns = `
+        <button class="btn btn-edit-comment" data-index="${i}" title="Sửa bình luận">
+          <i class="fas fa-pen"></i>
+        </button>
+        <button class="btn btn-delete-comment" data-index="${i}" title="Xóa bình luận">
+          <i class="fas fa-trash"></i>
+        </button>
+      `;
+    }
     li.innerHTML = `
       <img src="${user?.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || comment.user)}`}" alt="avatar" class="comment-avatar">
       <div class="comment-content">
@@ -92,11 +105,37 @@ async function renderComments() {
           <span class="comment-author">${user?.name || comment.user}</span>
           <span class="comment-date">${new Date(comment.postedAt).toLocaleDateString('vi-VN')}</span>
         </div>
-        <div class="comment-text">${comment.content}</div>
+        <div class="comment-text" data-index="${i}">${comment.content}</div>
+        <div class="comment-actions">${actionBtns}</div>
       </div>
     `;
     comment_list.appendChild(li);
   }
+
+  // Gán sự kiện cho nút Sửa/Xóa
+  comment_list.querySelectorAll('.btn-edit-comment').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const idx = parseInt(this.dataset.index);
+      const commentTextDiv = comment_list.querySelector(`.comment-text[data-index='${idx}']`);
+      const oldContent = commentTextDiv.textContent;
+      const newContent = prompt('Chỉnh sửa bình luận:', oldContent);
+      if (newContent !== null && newContent.trim() !== '' && newContent !== oldContent) {
+        const { editComment } = await import('../components/blogs.js');
+        await editComment(blogId, idx, newContent.trim());
+        renderComments();
+      }
+    });
+  });
+  comment_list.querySelectorAll('.btn-delete-comment').forEach(btn => {
+    btn.addEventListener('click', async function() {
+      const idx = parseInt(this.dataset.index);
+      if (confirm('Bạn có chắc chắn muốn xóa bình luận này?')) {
+        const { deleteComment } = await import('../components/blogs.js');
+        await deleteComment(blogId, idx);
+        renderComments();
+      }
+    });
+  });
 }
 
 renderComments();
