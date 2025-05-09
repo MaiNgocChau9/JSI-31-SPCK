@@ -33,7 +33,7 @@ async function createUserMenu(currentUser) {
     // Lấy thông tin user từ Firestore để lấy avatar mới nhất
     let email = Array.isArray(currentUser) ? currentUser[0]?.email : currentUser.email;
     let userInfo = await getUser(email);
-    let avatarUrl = userInfo?.avatar || (Array.isArray(currentUser) ? currentUser[0]?.avatar : currentUser.avatar) || 'https://www.svgrepo.com/show/384674/account-avatar-profile-user-11.svg';
+    let avatarUrl = userInfo?.avatar || (Array.isArray(currentUser) ? currentUser[0]?.avatar : currentUser.avatar) || 'https://raw.githubusercontent.com/MaiNgocChau9/JSI-31-SPCK/refs/heads/main/default_avatar.png';
 
     // Tạo avatar
     const avatar = document.createElement('img');

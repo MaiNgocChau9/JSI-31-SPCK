@@ -13,7 +13,7 @@ export default function User(
   username,
   email,
   role = "USER",
-  avatar = "https://..."
+  avatar = "https://raw.githubusercontent.com/MaiNgocChau9/JSI-31-SPCK/refs/heads/main/default_avatar.png"
 ) {
   this.username = username;
   this.email = email;

@@ -82,11 +82,15 @@ if (signupForm) {
         
         createUserWithEmailAndPassword(auth, email, password)
             .then(async () => {
-                // Lưu dữ liệu người dùng vào Firestore
-                const newUser = new Users(username, email);
+                // Lưu dữ liệu người dùng vào Firestore với avatar mặc định
+                const newUser = new Users(
+                  username,
+                  email,
+                  "USER",
+                  "https://raw.githubusercontent.com/MaiNgocChau9/JSI-31-SPCK/refs/heads/main/default_avatar.png"
+                );
                 await addUser(newUser);
                 alert('Đăng ký thành công!');
-                
                 window.location.href = '../index.html';
             })
             .catch((error) => alert(error.message));
