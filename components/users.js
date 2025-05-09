@@ -45,8 +45,16 @@ export async function getUser(email) {
 
   if (!querySnapshot.empty) {
     // Assuming email is unique and you want the first match
-    const doc = querySnapshot.docs[0];
-    return { id: doc.id, ...doc.data() };
+    const docSnap = querySnapshot.docs[0];
+    let userData = { id: docSnap.id, ...docSnap.data() };
+    // Kiểm tra avatar rỗng hoặc sai định dạng
+    if (!userData.avatar || userData.avatar === "https://..." || userData.avatar.trim() === "" ) {
+      userData.avatar = "https://raw.githubusercontent.com/MaiNgocChau9/JSI-31-SPCK/refs/heads/main/default_avatar.png";
+      // Cập nhật lại trên Firestore nếu cần
+      const userRef = doc(firestore, "users", docSnap.id);
+      await updateDoc(userRef, { avatar: userData.avatar });
+    }
+    return userData;
   } else {
     return null; // No user found
   }
