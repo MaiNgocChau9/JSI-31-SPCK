@@ -34,6 +34,16 @@ async function createUserMenu(currentUser) {
     let email = Array.isArray(currentUser) ? currentUser[0]?.email : currentUser.email;
     let userInfo = await getUser(email);
     let avatarUrl = userInfo?.avatar || (Array.isArray(currentUser) ? currentUser[0]?.avatar : currentUser.avatar) || 'https://raw.githubusercontent.com/MaiNgocChau9/JSI-31-SPCK/refs/heads/main/default_avatar.png';
+    // Nếu avatar rỗng hoặc sai định dạng thì cập nhật lại trên Firestore và UI
+    if (!avatarUrl || avatarUrl === "https://..." || avatarUrl.trim() === "") {
+        avatarUrl = 'https://raw.githubusercontent.com/MaiNgocChau9/JSI-31-SPCK/refs/heads/main/default_avatar.png';
+        if (userInfo && userInfo.id) {
+            const { doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js");
+            const { firestore } = await import("./firebase.js");
+            const userRef = doc(firestore, "users", userInfo.id);
+            await updateDoc(userRef, { avatar: avatarUrl });
+        }
+    }
 
     // Tạo avatar
     const avatar = document.createElement('img');
