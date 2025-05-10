@@ -58,7 +58,7 @@ body {
 }
 
 .editor-header {
-  width: 80vw;
+  width: 70vw;
   margin-bottom: 24px;
   background: var(--card-bg);
   border-radius: 12px;
@@ -144,23 +144,28 @@ body {
 
 /* Quill Editor Container */
 .editor-container {
-  width: 80vw;
+  width: 70vw;
   margin: 0 auto 24px auto; /* Add bottom margin */
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: var(--shadow-sm);
-  border: 1px solid var(--quill-toolbar-border);
+  border-radius: 12px; /* This might be redundant if children have full borders */
+  /* overflow: hidden; Removed to allow sticky toolbar */
+  /* box-shadow: var(--shadow-sm); Shadow can be on individual elements */
+  /* border: 1px solid var(--quill-toolbar-border); Removed border */
   display: flex; /* Make it a flex container */
   flex-direction: column; /* Stack toolbar and editor vertically */
   flex-grow: 1; /* Allow it to take remaining vertical space */
+  gap: 16px; /* Add gap between toolbar and editor */
 }
 
 /* Quill Toolbar */
 #toolbar-container {
+  position: sticky;
+  top: 0;
+  z-index: 100; /* Ensure it's above other content */
   padding: 12px;
   background: var(--quill-toolbar-bg);
-  border-bottom: 1px solid var(--quill-toolbar-border);
-  border-radius: 12px 12px 0 0;
+  border: 2px solid var(--accent); /* Border on all 4 sides */
+  border-radius: 12px; /* Rounded corners on all 4 sides */
+  box-shadow: var(--shadow-sm); 
 }
 
 .ql-toolbar.ql-snow {
@@ -230,39 +235,47 @@ body {
 /* Quill Editor Content */
 #editor {
   background: var(--quill-editor-bg);
-  border-radius: 0 0 12px 12px;
-  /* height: calc(100vh - 280px); Remove fixed height, rely on flex-grow */
+  border-radius: 12px; /* Rounded corners on all 4 sides */
+  border: 1px solid var(--quill-toolbar-border); /* Border on all 4 sides */
   min-height: 400px; 
   display: flex; 
   flex-direction: column;
   flex-grow: 1; /* Allow #editor to take remaining space in .editor-container */
+  box-shadow: var(--shadow-sm);
+  overflow: hidden; /* To ensure ql-container respects border-radius */
 }
 
 .ql-container.ql-snow {
   border: none !important;
   font-family: 'Open Sans', sans-serif !important;
-  border-top: 1px solid var(--quill-toolbar-border) !important;
+  /* border-top: 1px solid var(--quill-toolbar-border); Removed as #editor now has full border */
   flex-grow: 1; /* Allow ql-container to grow and fill remaining height */
   display: flex; /* Use flexbox for ql-editor */
   flex-direction: column;
 }
 
 .ql-editor {
-  padding: 24px !important;
+  padding: 30px !important;
+  padding-left: 80px !important;
+  padding-right: 80px !important;
   font-size: 1.1rem !important;
   line-height: 1.6 !important;
   color: var(--quill-editor-text) !important;
   background: var(--quill-editor-bg) !important;
   flex-grow: 1; /* Allow ql-editor to grow and fill remaining height */
   overflow-y: auto; /* Add scroll if content exceeds height */
+  text-align: justify !important;
 }
 
-.ql-editor {
-  padding: 24px !important;
-  font-size: 1.1rem !important;
-  line-height: 1.6 !important;
-  color: var(--quill-editor-text) !important;
-  background: var(--quill-editor-bg) !important;
+.ql-editor img {
+  display: block !important;
+  max-width: 100% !important;
+  width: auto !important; /* Ensure max-width is respected */
+  max-height: 80vh !important; /* Using viewport height as a proxy */
+  height: auto !important; /* Maintain aspect ratio */
+  margin: 1em auto !important; /* Center and add spacing */
+  border-radius: 10px !important; /* Optional: consistent rounding */
+  box-shadow: var(--shadow-sm) !important; /* Optional: consistent shadow */
 }
 
 [data-theme="dark"] .ql-snow .ql-stroke {
