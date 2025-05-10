@@ -33,6 +33,15 @@ async function renderBlog() {
       };
     }
   }
+  // Render thumbnail
+  const thumbnailImgElement = document.getElementById("post-thumbnail-img");
+  if (blog.thumbnail && blog.thumbnail.trim() !== "") { // Changed to blog.thumbnail
+    thumbnailImgElement.src = blog.thumbnail; // Changed to blog.thumbnail
+    thumbnailImgElement.style.display = "block"; // Show the image
+  } else {
+    thumbnailImgElement.style.display = "none"; // Hide if no thumbnail
+  }
+
   // Render nội dung
   document.querySelector(".post-title").textContent = blog.title;
   document.querySelector(".post-meta").innerHTML = `

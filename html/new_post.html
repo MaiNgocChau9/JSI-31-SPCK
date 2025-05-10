@@ -11,7 +11,10 @@
 </head>
 <body>
     <div class="editor-header">
-        <input type="text" id="title-input" placeholder="Tiêu đề bài viết">
+        <div class="title-thumbnail-group">
+            <input type="text" id="title-input" placeholder="Tiêu đề bài viết">
+            <input type="text" id="thumbnail-url-input" placeholder="Link ảnh thumbnail (URL)">
+        </div>
         <button id="theme-toggle" class="btn btn-theme">
             <i class="fas fa-sun theme-icon-light"></i>
             <i class="fas fa-moon theme-icon-dark"></i>
@@ -62,12 +65,19 @@
         // Sự kiện khi nhấn nút "Đăng" để đăng bài viết
         document.getElementById('add-post-btn').addEventListener('click', async function() {
             const title = document.getElementById('title-input').value;
+            const thumbnail = document.getElementById('thumbnail-url-input').value; // Changed variable name for clarity
             const content = quill.root.innerHTML;
 
             if (title.trim() === "" || quill.getText().trim() === "") {
                 alert("Vui lòng điền tiêu đề và nội dung bài viết.");
                 return;
             }
+            // Basic URL validation for thumbnail
+            if (thumbnail.trim() !== "" && !/^https?:\/\/.+\..+/.test(thumbnail)) { // Use 'thumbnail' variable
+                alert("Link ảnh thumbnail không hợp lệ. Vui lòng nhập URL hợp lệ.");
+                return;
+            }
+
 
             let email = "unknown";
             const currentUser = JSON.parse(localStorage.getItem("currentUser"))[0];
@@ -78,7 +88,8 @@
                 title: title,
                 content: content,
                 postedBy: email,
-                description: quill.getText().slice(0, 150)
+                description: quill.getText().slice(0, 150),
+                thumbnail: thumbnail.trim() // Changed property to 'thumbnail'
             });
 
             try {

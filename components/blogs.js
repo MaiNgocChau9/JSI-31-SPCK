@@ -45,7 +45,7 @@ export function Blog({
   description = "",
   postedBy = "",
   postedAt = null,
-  thumbnail = "https://images.unsplash.com/photo-1486572788966-cfd3df1f5b42?q=80&w=1472&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+  thumbnail = "", // Reverted to thumbnail, default to empty string
   comments = []
 } = {}) {
   return {
@@ -54,7 +54,7 @@ export function Blog({
     description,
     postedBy,
     postedAt: postedAt || new Date().toISOString(),
-    thumbnail,
+    thumbnail, // Reverted to thumbnail
     comments,
   };
 }
