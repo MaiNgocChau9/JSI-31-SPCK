@@ -53,7 +53,13 @@
     <!-- Quill JS -->
     <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script type="module">
-        import { Blog, addBlog } from "../components/blogs.js";
+        import { Blog, addBlog, getBlogById, updateBlog } from "../components/blogs.js";
+        
+        const titleInput = document.getElementById('title-input');
+        const thumbnailInput = document.getElementById('thumbnail-url-input');
+        const addPostBtn = document.getElementById('add-post-btn');
+        let editId = null;
+
         // Khởi tạo Quill editor
         const quill = new Quill('#editor', {
             modules: {
@@ -62,42 +68,81 @@
             theme: 'snow'
         });
 
-        // Sự kiện khi nhấn nút "Đăng" để đăng bài viết
-        document.getElementById('add-post-btn').addEventListener('click', async function() {
-            const title = document.getElementById('title-input').value;
-            const thumbnail = document.getElementById('thumbnail-url-input').value; // Changed variable name for clarity
+        // Check for edit mode
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            editId = params.get('editId');
+
+            if (editId) {
+                const blogToEdit = await getBlogById(editId);
+                if (blogToEdit) {
+                    // Check if current user is the author
+                    const currentUser = JSON.parse(localStorage.getItem("currentUser"))?.[0];
+                    if (!currentUser || currentUser.email !== blogToEdit.postedBy) {
+                        alert("Bạn không có quyền chỉnh sửa bài viết này.");
+                        window.location.href = './blogs.html'; // Redirect if not author
+                        return;
+                    }
+
+                    titleInput.value = blogToEdit.title || "";
+                    thumbnailInput.value = blogToEdit.thumbnail || "";
+                    quill.root.innerHTML = blogToEdit.content || "";
+                    addPostBtn.textContent = "Cập nhật";
+                    document.title = "Chỉnh sửa bài viết - Game Mood";
+                } else {
+                    alert("Không tìm thấy bài viết để chỉnh sửa.");
+                    editId = null; // Reset editId if blog not found
+                }
+            }
+        });
+
+        // Sự kiện khi nhấn nút "Đăng" hoặc "Cập nhật"
+        addPostBtn.addEventListener('click', async function() {
+            const title = titleInput.value;
+            const thumbnail = thumbnailInput.value;
             const content = quill.root.innerHTML;
 
             if (title.trim() === "" || quill.getText().trim() === "") {
                 alert("Vui lòng điền tiêu đề và nội dung bài viết.");
                 return;
             }
-            // Basic URL validation for thumbnail
-            if (thumbnail.trim() !== "" && !/^https?:\/\/.+\..+/.test(thumbnail)) { // Use 'thumbnail' variable
+            if (thumbnail.trim() !== "" && !/^https?:\/\/.+\..+/.test(thumbnail)) {
                 alert("Link ảnh thumbnail không hợp lệ. Vui lòng nhập URL hợp lệ.");
                 return;
             }
 
-
-            let email = "unknown";
-            const currentUser = JSON.parse(localStorage.getItem("currentUser"))[0];
-            if (currentUser && currentUser.email) {
-                email = currentUser.email;
+            const currentUser = JSON.parse(localStorage.getItem("currentUser"))?.[0];
+            if (!currentUser) {
+                alert("Vui lòng đăng nhập để thực hiện hành động này.");
+                return; // Should not happen if edit mode check is done properly
             }
-            const post = Blog({
+            const email = currentUser.email;
+
+            const postData = { // Use a generic object for data
                 title: title,
                 content: content,
-                postedBy: email,
+                postedBy: email, // This will be set for new posts, ignored for updates by updateBlog logic
                 description: quill.getText().slice(0, 150),
-                thumbnail: thumbnail.trim() // Changed property to 'thumbnail'
-            });
+                thumbnail: thumbnail.trim()
+            };
 
             try {
-                await addBlog(post);
-                alert("Bài viết đã được đăng thành công!");
+                if (editId) {
+                    // For update, we don't want to change postedBy or postedAt from client
+                    // The updateBlog function handles updatedAt and preserves postedAt
+                    const updateData = { ...postData };
+                    delete updateData.postedBy; // Let updateBlog preserve original author
+
+                    await updateBlog(editId, updateData);
+                    alert("Bài viết đã được cập nhật thành công!");
+                } else {
+                    const newPost = Blog(postData); // Create Blog object for new posts
+                    await addBlog(newPost);
+                    alert("Bài viết đã được đăng thành công!");
+                }
                 window.location.href = './blogs.html'; 
             } catch (error) {
-                alert("Đăng bài thất bại: " + error.message);
+                alert((editId ? "Cập nhật" : "Đăng") + " bài thất bại: " + error.message);
             }
         });
     </script>

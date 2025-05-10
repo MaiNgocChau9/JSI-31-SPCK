@@ -33,8 +33,10 @@ import {
   setDoc,
   getDocs,
   getDoc,
+  deleteDoc, // Import deleteDoc
   query,
   where,
+  orderBy, 
   serverTimestamp,
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js";
 
@@ -59,26 +61,44 @@ export function Blog({
   };
 }
 
-// Hàm lưu blog lên Firestore
+// Hàm lưu blog lên Firestore (for new posts)
 export async function addBlog(blogObj) {
-  const blogsRef = doc(collection(firestore, "blogs"));
+  const blogsRef = doc(collection(firestore, "blogs")); // Always creates a new doc ref
   await setDoc(blogsRef, {
     ...blogObj,
-    postedAt: serverTimestamp(),
+    postedAt: serverTimestamp(), // Set postedAt for new blogs
+    // comments: blogObj.comments || [] // Ensure comments array exists
   });
 }
+
+// Hàm cập nhật blog
+export async function updateBlog(blogId, blogData) {
+  const blogRef = doc(firestore, "blogs", blogId);
+  const dataToUpdate = { 
+    ...blogData, 
+    updatedAt: serverTimestamp() // Add/update updatedAt timestamp
+  };
+  // Remove postedAt from dataToUpdate if it was set by client-side new Date() in Blog factory
+  // The original postedAt should be preserved.
+  if (blogData.postedAt && !(blogData.postedAt.seconds || blogData.postedAt.toDate)) {
+    delete dataToUpdate.postedAt;
+  }
+  await setDoc(blogRef, dataToUpdate, { merge: true }); // merge:true to only update provided fields
+}
+
 
 // Hàm lấy tất cả blogs
 export async function getAllBlogs() {
   const blogsRef = collection(firestore, "blogs");
-  const querySnapshot = await getDocs(blogsRef);
+  const q = query(blogsRef, orderBy("postedAt", "desc")); // Order by postedAt descending
+  const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
 
 // Hàm lấy danh sách bài viết của người dùng theo email
 export async function getBlogsByEmail(email) {
   const blogsRef = collection(firestore, "blogs");
-  const q = query(blogsRef, where("postedBy", "==", email));
+  const q = query(blogsRef, where("postedBy", "==", email), orderBy("postedAt", "desc")); // Order by postedAt descending
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 }
@@ -94,5 +114,24 @@ export async function addComment(blogId, comment) {
     await setDoc(blogRef, { comments }, { merge: true });
   } else {
     console.log("No such document!");
+  }
+}
+
+// Hàm xóa blog khỏi Firestore
+export async function deleteBlogFirebase(blogId) {
+  const blogRef = doc(firestore, "blogs", blogId);
+  await deleteDoc(blogRef);
+}
+
+// Hàm lấy blog theo ID
+export async function getBlogById(blogId) {
+  if (!blogId) return null;
+  const blogRef = doc(firestore, "blogs", blogId);
+  const blogSnap = await getDoc(blogRef);
+  if (blogSnap.exists()) {
+    return { id: blogSnap.id, ...blogSnap.data() };
+  } else {
+    console.log("No such document for ID:", blogId);
+    return null;
   }
 }

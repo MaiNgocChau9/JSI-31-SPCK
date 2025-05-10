@@ -44,11 +44,53 @@ async function renderBlog() {
 
   // Render nội dung
   document.querySelector(".post-title").textContent = blog.title;
-  document.querySelector(".post-meta").innerHTML = `
+  const postMetaElement = document.querySelector(".post-meta");
+  
+  let metaHTML = `
     <img src="${userInfo.avatar}" alt="avatar" class="rounded-circle me-2" style="width:32px;height:32px;object-fit:cover;"> ${userInfo.name}
     <span class="mx-2">|</span>
     <i class="fas fa-calendar-alt" style="font-size:1.15em;"></i> ${blog.postedAt ? (new Date(blog.postedAt.seconds ? blog.postedAt.seconds*1000 : blog.postedAt)).toLocaleDateString('vi-VN') : ''}
   `;
+
+  // Add Edit/Delete buttons if current user is the author
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"))?.[0];
+  if (currentUser && currentUser.email === blog.postedBy) {
+    metaHTML += `
+      <span class="mx-2">|</span>
+      <button id="edit-post-btn" class="btn btn-sm btn-outline-secondary me-2" data-id="${blogId}"><i class="fas fa-edit"></i> Sửa</button>
+      <button id="delete-post-btn" class="btn btn-sm btn-outline-danger" data-id="${blogId}"><i class="fas fa-trash"></i> Xóa</button>
+    `;
+  }
+  postMetaElement.innerHTML = metaHTML;
+
+  // Add event listeners for edit and delete buttons
+  if (currentUser && currentUser.email === blog.postedBy) {
+    const editBtn = document.getElementById("edit-post-btn");
+    if (editBtn) {
+      editBtn.addEventListener("click", () => {
+        window.location.href = `./new_post.html?editId=${blogId}`;
+      });
+    }
+
+    const deleteBtn = document.getElementById("delete-post-btn");
+    if (deleteBtn) {
+      deleteBtn.addEventListener("click", async () => {
+        if (confirm("Bạn có chắc chắn muốn xóa bài viết này không?")) {
+          // Import deleteBlog dynamically or ensure it's available
+          const { deleteBlogFirebase } = await import("../components/blogs.js"); // Assuming function name
+          try {
+            await deleteBlogFirebase(blogId);
+            alert("Bài viết đã được xóa thành công!");
+            window.location.href = "./blogs.html";
+          } catch (error) {
+            console.error("Error deleting blog:", error);
+            alert("Lỗi khi xóa bài viết: " + error.message);
+          }
+        }
+      });
+    }
+  }
+
   document.querySelector(".post-body").innerHTML = blog.content;
 }
 

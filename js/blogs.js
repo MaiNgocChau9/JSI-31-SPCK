@@ -79,10 +79,20 @@ window.addEventListener("DOMContentLoaded", async () => {
                     if (window.AOS) AOS.refresh();
                     return;
                 }
+                const htmlToText = (html) => {
+                    const temp = document.createElement('div');
+                    temp.innerHTML = html;
+                    return temp.textContent || temp.innerText || "";
+                };
+
                 const filtered = allBlogs.filter(
-                    (blog) =>
-                        (blog.title || "").toLowerCase().includes(keyword) ||
-                        (blog.description || "").toLowerCase().includes(keyword)
+                    (blog) => {
+                        const titleMatch = (blog.title || "").toLowerCase().includes(keyword);
+                        const descriptionMatch = (blog.description || "").toLowerCase().includes(keyword);
+                        const contentText = htmlToText(blog.content || "").toLowerCase();
+                        const contentMatch = contentText.includes(keyword);
+                        return titleMatch || descriptionMatch || contentMatch;
+                    }
                 );
                 if (filtered.length === 0) {
                     row.innerHTML = `<div class='blogs-no-result'>Không tìm thấy bài viết phù hợp.</div>`;
