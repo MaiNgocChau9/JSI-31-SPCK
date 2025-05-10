@@ -48,6 +48,7 @@
 body {
   margin: 0;
   padding: 24px;
+  padding-bottom: 0;
   background: var(--background);
   color: var(--text);
   min-height: 100vh;
@@ -144,11 +145,14 @@ body {
 /* Quill Editor Container */
 .editor-container {
   width: 80vw;
-  margin: 0 auto;
+  margin: 0 auto 24px auto; /* Add bottom margin */
   border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--quill-toolbar-border);
+  display: flex; /* Make it a flex container */
+  flex-direction: column; /* Stack toolbar and editor vertically */
+  flex-grow: 1; /* Allow it to take remaining vertical space */
 }
 
 /* Quill Toolbar */
@@ -183,7 +187,18 @@ body {
 .ql-toolbar.ql-snow .ql-formats button,
 .ql-toolbar.ql-snow .ql-picker-label {
   color: var(--primary) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 32px !important; /* Match button height */
+  padding: 0 8px !important; /* Add some padding */
+  font-size: 0.9rem !important; /* Increase font size */
 }
+
+.ql-toolbar.ql-snow .ql-picker-label {
+    border-radius: 6px !important; /* Match button border-radius */
+}
+
 
 .ql-toolbar.ql-snow .ql-formats button:hover,
 .ql-toolbar.ql-snow .ql-picker-label:hover {
@@ -192,23 +207,54 @@ body {
 }
 
 .ql-snow.ql-toolbar button.ql-active,
-.ql-snow .ql-toolbar button.ql-active {
+.ql-snow .ql-toolbar button.ql-active,
+.ql-snow.ql-toolbar .ql-picker-label.ql-active,
+.ql-snow .ql-toolbar .ql-picker-label.ql-active {
   color: var(--accent) !important;
   background: var(--button-hover-bg) !important;
+}
+
+.ql-snow .ql-picker-options {
+  padding: 8px 0 !important;
+  border-radius: 6px !important;
+  background-color: var(--quill-toolbar-bg) !important;
+  border: 1px solid var(--quill-toolbar-border) !important;
+}
+
+.ql-snow .ql-picker-options .ql-picker-item {
+  padding: 5px 12px !important;
+  font-size: 0.9rem !important;
+  color: var(--quill-editor-text) !important;
 }
 
 /* Quill Editor Content */
 #editor {
   background: var(--quill-editor-bg);
   border-radius: 0 0 12px 12px;
-  height: calc(100vh - 280px);
-  min-height: 400px;
+  /* height: calc(100vh - 280px); Remove fixed height, rely on flex-grow */
+  min-height: 400px; 
+  display: flex; 
+  flex-direction: column;
+  flex-grow: 1; /* Allow #editor to take remaining space in .editor-container */
 }
 
 .ql-container.ql-snow {
   border: none !important;
   font-family: 'Open Sans', sans-serif !important;
   border-top: 1px solid var(--quill-toolbar-border) !important;
+  flex-grow: 1; /* Allow ql-container to grow and fill remaining height */
+  display: flex; /* Use flexbox for ql-editor */
+  flex-direction: column;
+}
+
+.ql-editor {
+  padding: 24px !important;
+  font-size: 1.1rem !important;
+  line-height: 1.6 !important;
+  color: var(--quill-editor-text) !important;
+  background: var(--quill-editor-bg) !important;
+  flex-grow: 1; /* Allow ql-editor to grow and fill remaining height */
+  overflow-y: auto; /* Add scroll if content exceeds height */
 }
 
 .ql-editor {
