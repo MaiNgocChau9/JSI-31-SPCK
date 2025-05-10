@@ -1,4 +1,4 @@
-import { getHistoriesByUser } from "../components/history.js";
+import { getHistoriesByUser, deleteHistory, editHistoryTitle } from "../components/history.js";
 
 function getCurrentEmail() {
   const user = JSON.parse(localStorage.getItem("currentUser"));
@@ -31,12 +31,15 @@ async function displaySearchHistory() {
     <div class="history-item" data-aos="fade-up" data-aos-delay="${100 + index*50}">
       <div class="history-item-content">
         <i class="fas fa-search history-icon"></i>
-        <div class="history-details">
+        <div class="history-text-clickable" data-title="${item.title}">
           <p class="history-query">${item.title}</p>
           <span class="history-timestamp">Vào ${formatTimestamp(item.createdAt)}</span>
         </div>
       </div>
-      <button class="btn rerun-btn" data-title="${item.title}">Mở</button>
+      <div class="history-actions">
+        <button class="btn btn-sm btn-primary edit-history-btn" data-title="${item.title}"><i class="fas fa-edit"></i> Sửa</button>
+        <button class="btn btn-sm btn-danger delete-history-btn" data-title="${item.title}"><i class="fas fa-trash-alt"></i> Xóa</button>
+      </div>
     </div>
   `).join('');
 }
@@ -46,14 +49,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // Bắt sự kiện click qua delegation
   const historyList = document.querySelector('.history-list');
   historyList.addEventListener('click', async e => {
-    if (!e.target.classList.contains('rerun-btn')) return;
-    const title = e.target.dataset.title;
+    const target = e.target;
+    const title = target.dataset.title || target.closest('.history-text-clickable')?.dataset.title || target.closest('.edit-history-btn')?.dataset.title || target.closest('.delete-history-btn')?.dataset.title;
     const email = getCurrentEmail();
-    const history = await getHistoriesByUser(email);
-    const item = history.find(h => h.title === title);
-    if (item) {
-      localStorage.setItem("showHistory", JSON.stringify(item));
-      window.location.href = "./show_history.html";
+
+    if (target.closest('.history-text-clickable')) {
+      const history = await getHistoriesByUser(email);
+      const item = history.find(h => h.title === title);
+      if (item) {
+        localStorage.setItem("showHistory", JSON.stringify(item));
+        window.location.href = "./show_history.html";
+      }
+    } else if (target.closest('.edit-history-btn')) {
+      const newTitle = prompt("Nhập tên mới cho lịch sử:", title);
+      if (newTitle && newTitle !== title) {
+        await editHistoryTitle(email, title, newTitle);
+        displaySearchHistory(); // Refresh the list
+      }
+    } else if (target.closest('.delete-history-btn')) {
+      if (confirm("Bạn có chắc chắn muốn xóa lịch sử này?")) {
+        await deleteHistory(email, title);
+        displaySearchHistory(); // Refresh the list
+      }
     }
   });
 });

@@ -16,7 +16,7 @@ export async function deleteHistory(email, title) {
   const querySnapshot = await getDocs(q);
   if (!querySnapshot.empty) {
     const docRef = querySnapshot.docs[0].ref;
-    await docRef.delete();
+    await deleteDoc(docRef); // Use deleteDoc function
   }
 }
 import { firestore } from "../js/firebase.js";
@@ -28,6 +28,7 @@ import {
   query,
   where,
   serverTimestamp,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore-lite.js";
 
 // Hàm tạo object lịch sử trò chuyện

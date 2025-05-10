@@ -150,25 +150,57 @@ main {
   color: var(--timestamp-color);
 }
 
-.rerun-btn {
-  background-color: var(--primary);
-  color: var(--background);
-  border: none;
-  padding: 0.5rem 1rem;
+.history-text-clickable {
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.history-text-clickable:hover .history-query {
+  text-decoration: underline;
+  color: var(--primary); /* Optional: change color on hover */
+}
+
+.history-actions {
+  display: flex;
+  gap: 0.5rem; /* Space between buttons */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
+}
+
+.edit-history-btn,
+.delete-history-btn {
+  padding: 0.4rem 0.8rem; /* Smaller padding for smaller buttons */
   border-radius: 0.5rem;
-  font-size: 0.9rem;
+  font-size: 0.85rem; /* Smaller font size */
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
 }
 
-.rerun-btn:hover {
+.edit-history-btn {
+  background-color: var(--primary);
+  color: var(--background);
+  border: 1px solid var(--primary);
+}
+
+.edit-history-btn:hover {
   background-color: var(--accent);
+  border-color: var(--accent);
   transform: scale(1.05);
 }
+
+.delete-history-btn {
+  background-color: var(--background);
+  color: var(--text);
+  border: 1px solid var(--border-color);
+}
+
+.delete-history-btn:hover {
+  background-color: #dc3545; /* Bootstrap danger color */
+  color: white;
+  border-color: #dc3545;
+  transform: scale(1.05);
+}
+
 
 /* Footer Styles (Copied from index.css) */
 .footer { background-color: var(--background); padding: 4rem 0 2rem; border-top: 1px solid var(--border-color); margin-top: auto; } /* Added margin-top: auto */
