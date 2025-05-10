@@ -6,6 +6,8 @@
     <title>Đăng bài mới - Game Mood</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/new_post.css">
+    <!-- Quill Editor CDN -->
+    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 </head>
 <body>
     <div class="editor-header">
@@ -19,158 +21,64 @@
             <a href="../index.html"><button id="cancel-post-btn" type="button">Hủy bỏ</button></a>
         </div>
     </div>
-    <div id="toolbar">
-        <div class="toolbar-group">
-            <select id="headingSelect">
-                <option value="">Tiêu đề</option>
-                <option value="h1">Tiêu đề cấp 1</option>
-                <option value="h2">Tiêu đề cấp 2</option>
-                <option value="h3">Tiêu đề cấp 3</option>
-                <option value="h4">Tiêu đề cấp 4</option>
-                <option value="h5">Tiêu đề cấp 5</option>
-                <option value="h6">Tiêu đề cấp 6</option>
-            </select>
-        </div>
-        <div class="toolbar-separator"></div>
-        <div class="toolbar-group">
-            <button id="boldBtn">B</button>
-            <button id="italicBtn"><i>I</i></button>
-            <button id="underlineBtn"><u>U</u></button>
-        </div>
-        <div class="toolbar-separator"></div>
-        <div class="toolbar-group">
-            <button id="orderedListBtn">OL</button>
-            <button id="unorderedListBtn">UL</button>
-        </div>
-        <div class="toolbar-separator"></div>
-        <div class="toolbar-group">
-            <button id="imageFileBtn">Choose Image</button>
-            <button id="imageUrlBtn">Thêm hình ảnh</button>
-            <input type="file" id="imageInput" accept="image/*">
-        </div>
-    </div>
-    <div id="editor-container">
-        <iframe id="editor"></iframe>
+    <div class="editor-container">
+      <!-- Quill Toolbar -->
+      <div id="toolbar-container">
+        <span class="ql-formats">
+          <select class="ql-header">
+            <option selected></option>
+            <option value="1">H1</option>
+            <option value="2">H2</option>
+            <option value="3">H3</option>
+          </select>
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-underline"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-list" value="ordered"></button>
+          <button class="ql-list" value="bullet"></button>
+        </span>
+        <span class="ql-formats">
+          <button class="ql-image"></button>
+          <button class="ql-link"></button>
+        </span>
+      </div>
+      <div id="editor"></div>
     </div>
     <script src="../js/switch_theme.js"></script>
+    <!-- Quill JS -->
+    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
     <script type="module">
         import { Blog, addBlog } from "../components/blogs.js";
-        // Lấy đối tượng iframe có id 'editor' và lấy nội dung bên trong (window của iframe)
-        const editor = document.getElementById('editor').contentWindow;
-
-        // Định nghĩa các lệnh chỉnh sửa sẽ được thực thi khi nhấn các nút toolbar
-        const commands = {
-            'boldBtn': 'bold',               // Nhấn nút 'boldBtn' để làm đậm văn bản
-            'italicBtn': 'italic',           // Nhấn nút 'italicBtn' để làm nghiêng văn bản
-            'underlineBtn': 'underline',     // Nhấn nút 'underlineBtn' để gạch dưới văn bản
-            'orderedListBtn': 'insertOrderedList', // Nhấn nút 'orderedListBtn' để tạo danh sách có thứ tự
-            'unorderedListBtn': 'insertUnorderedList', // Nhấn nút 'unorderedListBtn' để tạo danh sách không có thứ tự
-        };
-
-        // Kích hoạt chế độ soạn thảo cho iframe (chế độ chỉnh sửa nội dung)
-        editor.document.designMode = 'on';
-
-        // Áp dụng CSS cho nội dung trong iframe
-        editor.document.body.style.cssText = `
-            @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-            font-family: "Open Sans", sans-serif;  
-            font-size: 16px; line-height: 1.5;  
-            padding: 20px;                     
-            max-width: 800px;                 
-            color: #333;                     
-            margin: 0 auto;                   
-        `;
-
-        // Tạo thẻ <style> và thêm các quy tắc CSS bổ sung vào phần head của iframe
-        const style = document.createElement('style');
-        style.textContent = `
-            img { max-width: 100%; height: auto; border-radius: 8px; margin: 10px auto; }  // Hình ảnh sẽ co giãn phù hợp với kích thước và có viền bo tròn
-            body::-webkit-scrollbar { width: 10px; }                                      // Tùy chỉnh thanh cuộn trong iframe
-            body::-webkit-scrollbar-track { background: #f1f1f1; }
-            body::-webkit-scrollbar-thumb { background: #888; border-radius: 5px; }
-            body::-webkit-scrollbar-thumb:hover { background: #555; }
-            html { scrollbar-width: thin; scrollbar-color: #888 #f1f1f1; }
-        `;
-        // Thêm thẻ <style> vào head của iframe
-        editor.document.head.appendChild(style);
-
-        // Gán sự kiện click cho các nút lệnh trong đối tượng commands (bôi đậm, nghiêng, gạch dưới...)
-        Object.keys(commands).forEach(id => {
-            document.getElementById(id).addEventListener('click', () => execCommand(commands[id]));
+        // Khởi tạo Quill editor
+        const quill = new Quill('#editor', {
+            modules: {
+                toolbar: '#toolbar-container'
+            },
+            theme: 'snow'
         });
-
-        // Hàm thực thi lệnh chỉnh sửa văn bản trong iframe
-        function execCommand(command, value = null) {
-            editor.focus();                               // Đặt tiêu điểm vào iframe trước khi thực thi lệnh
-            editor.document.execCommand(command, false, value); // Thực thi lệnh chỉnh sửa (vd: bold, italic...)
-        }
-
-        // Gán sự kiện thay đổi cho dropdown "headingSelect" để thay đổi tiêu đề (H1, H2...)
-        document.getElementById('headingSelect').addEventListener('change', (e) => {
-            if (e.target.value) execCommand('formatBlock', `<${e.target.value}>`); // Chọn tiêu đề (h1-h6)
-            e.target.value = '';  // Reset lại dropdown sau khi thực hiện lệnh
-        });
-
-        // Sự kiện khi nhấn nút "Choose Image" để chọn ảnh từ máy
-        document.getElementById('imageFileBtn').addEventListener('click', () => imageInput.click());
-        document.getElementById('imageInput').addEventListener('change', (e) => {
-            const file = e.target.files[0];   // Lấy file ảnh từ input
-            if (file) {
-                const reader = new FileReader();  // Đọc file bằng FileReader
-                reader.onload = (e) => execCommand('insertHTML', `<img src="${e.target.result}" style="max-width: 100%; height: auto;">`);
-                reader.readAsDataURL(file);  // Chuyển đổi file thành chuỗi base64
-            }
-        });
-
-        // Sự kiện khi nhấn "Insert Image URL" để thêm ảnh từ URL
-        document.getElementById('imageUrlBtn').addEventListener('click', () => {
-            const url = prompt('Enter image URL:');   // Hiện cửa sổ nhập URL
-            if (url) execCommand('insertHTML', `<img src="${url}" style="max-width: 100%; height: auto;">`);  // Thêm ảnh vào iframe
-        });
-
-        // Sự kiện dán hình ảnh hoặc văn bản từ clipboard vào iframe
-        editor.document.addEventListener('paste', function(e) {
-            e.preventDefault();  // Ngăn hành động dán mặc định
-            const items = (e.clipboardData || e.originalEvent.clipboardData).items;  // Lấy các items từ clipboard
-            [...items].forEach(item => {
-                if (item.type.includes("image")) {    // Kiểm tra nếu là hình ảnh
-                    const blob = item.getAsFile();    // Lấy file ảnh
-                    const reader = new FileReader();  // Đọc file bằng FileReader
-                    reader.onload = (event) => execCommand('insertHTML', `<img src="${event.target.result}" style="max-width: 100%; height: auto;">`);
-                    reader.readAsDataURL(blob);       // Chuyển file thành base64
-                } else if (item.type === "text/plain") {  // Nếu là văn bản
-                    item.getAsString(text => execCommand('insertText', text));  // Dán văn bản vào iframe
-                }
-            });
-        });
-
-        // Đặt tiêu điểm vào iframe khi trang được tải
-        window.addEventListener('load', () => editor.focus());
 
         // Sự kiện khi nhấn nút "Đăng" để đăng bài viết
         document.getElementById('add-post-btn').addEventListener('click', async function() {
-            const title = document.getElementById('title-input').value;  // Lấy tiêu đề từ input
-            const content = editor.document.body.innerHTML;  // Lấy nội dung bài viết từ iframe
+            const title = document.getElementById('title-input').value;
+            const content = quill.root.innerHTML;
 
-            // Kiểm tra nếu tiêu đề hoặc nội dung trống thì hiển thị cảnh báo
-            if (title.trim() === "" || content.trim() === "") {
+            if (title.trim() === "" || quill.getText().trim() === "") {
                 alert("Vui lòng điền tiêu đề và nội dung bài viết.");
                 return;
             }
 
-            // Lấy email người dùng hiện tại từ localStorage (chỉ lấy dạng object)
             let email = "unknown";
             const currentUser = JSON.parse(localStorage.getItem("currentUser"))[0];
-            console.log(currentUser);
             if (currentUser && currentUser.email) {
                 email = currentUser.email;
             }
-            // Tạo đối tượng bài viết sử dụng factory Blog
             const post = Blog({
                 title: title,
                 content: content,
-                postedBy: email, // Lưu email người đăng
-                description: content.replace(/<[^>]+>/g, '').slice(0, 150) // Tóm tắt ngắn
+                postedBy: email,
+                description: quill.getText().slice(0, 150)
             });
 
             try {
@@ -181,25 +89,6 @@
                 alert("Đăng bài thất bại: " + error.message);
             }
         });
-
-        // Hàm lấy giá trị biến CSS từ :root
-        function getCssVar(varName) {
-            return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
-        }
-
-        // Hàm cập nhật màu nền và màu chữ cho iframe editor
-        function updateEditorTheme() {
-            const bg = getCssVar('--iframe-bg');
-            const color = getCssVar('--iframe-text');
-            editor.document.body.style.backgroundColor = bg;
-            editor.document.body.style.color = color;
-        }
-
-        // Gọi khi load trang và khi đổi theme
-        window.addEventListener('load', updateEditorTheme);
-        // Lắng nghe sự kiện theme thay đổi
-        const observer = new MutationObserver(updateEditorTheme);
-        observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
     </script>
 </body>
 </html>
