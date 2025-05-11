@@ -80,8 +80,6 @@ export async function updateBlog(blogId, blogData) {
     ...blogData, 
     updatedAt: serverTimestamp() // Add/update updatedAt timestamp
   };
-  // Remove postedAt from dataToUpdate if it was set by client-side new Date() in Blog factory
-  // The original postedAt should be preserved.
   if (blogData.postedAt && !(blogData.postedAt.seconds || blogData.postedAt.toDate)) {
     delete dataToUpdate.postedAt;
   }
