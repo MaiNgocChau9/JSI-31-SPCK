@@ -63,7 +63,18 @@
         // Khởi tạo Quill editor
         const quill = new Quill('#editor', {
             modules: {
-                toolbar: '#toolbar-container'
+                toolbar: {
+                    container: '#toolbar-container',
+                    handlers: {
+                        'image': function() {
+                            const url = prompt('Nhập URL hình ảnh:');
+                            if (url) {
+                                const range = this.quill.getSelection(true);
+                                this.quill.insertEmbed(range.index, 'image', url, Quill.sources.USER);
+                            }
+                        }
+                    }
+                }
             },
             theme: 'snow'
         });
